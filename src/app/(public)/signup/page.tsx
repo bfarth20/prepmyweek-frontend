@@ -32,9 +32,10 @@ export default function SignupPage() {
     const success = await signup(name, email, password);
     console.log("Signup result:", success);
     if (success) {
+      showToast("You are Registered!", "success");
       router.push("/home");
     } else {
-      showToast("Signup failed, please try again.", "error");
+      showToast("Server was sleeping...  Try logging in.", "error");
     }
   };
 
