@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@theme {
+  --font-body: "Inter", sans-serif;
+  --font-brand: "Montserrat", sans-serif;
+  --color-brand: #d95c23;
+  --color-background: #d9f9fa;
+
+  /* Optional additions from shadcn's style system */
+  --radius: 0.5rem;
+  --input-padding: 0.75rem;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@layer base {
+  :root {
+    font-family: var(--font-body);
+    background-color: var(--color-background);
+  }
+
+  body {
+    @apply text-gray-900 antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  nav,
+  button,
+  .font-brand {
+    font-family: var(--font-brand);
+  }
+}
+
+@keyframes fade-in-out {
+  0% {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  10% {
+    opacity: 0.8;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 0.8;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+}
+
+.animate-fade-in-out {
+  animation: fade-in-out 2.5s ease-in-out forwards;
+}
+
+.font-brand {
+  font-family: var(--font-brand);
+}
+
+@media print {
+  /* Hide anything non-essential */
+  nav,
+  footer,
+  .no-print,
+  button {
+    display: none !important;
+  }
+
+  /* Remove padding/margins that waste paper space */
+  body {
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Maximize content area for printing */
+  main,
+  .print-area {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Optional: adjust font size for print */
+  body {
+    font-size: 12pt;
+  }
+
+  /* Avoid page breaks within grocery sections */
+  h2 {
+    page-break-after: avoid;
+  }
+
+  /* Optional: show checkboxes as squares */
+  input[type="checkbox"] {
+    appearance: none;
+    border: 1px solid #333;
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    position: relative;
+    top: 2px;
+  }
+}

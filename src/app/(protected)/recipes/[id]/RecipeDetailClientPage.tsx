@@ -1,0 +1,191 @@
+"use client";
+
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { usePrep } from "@/components/context/PrepContext";
+import { useAuth } from "@/components/context/AuthContext";
+import { PrepTracker } from "@/components/ui/PrepTracker";
+import { Toast } from "@/components/ui/Toast";
+import { RecipeDetail, Recipe } from "@/lib/types";
+import API_BASE_URL from "@/lib/config";
+
+export default function RecipeDetailClientPage({
+  recipe,
+}: {
+  recipe: RecipeDetail;
+}) {
+  const { addDinner } = usePrep();
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastType, setToastType] = useState<"success" | "error">("success");
+
+  const showToast = (
+    message: string,
+    type: "success" | "error" = "success"
+  ) => {
+    setToastMessage(message);
+    setToastType(type);
+  };
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    }
+  }, [user, router]);
+
+  if (!user) return null;
+
+  const recipeWithCount: Recipe = {
+    ...recipe,
+    ingredientCount: recipe.ingredients?.length ?? 0,
+  };
+
+  const handleEdit = () => {
+    router.push(`/recipes/${recipe.id}/edit`);
+  };
+
+  const handleAddToPrep = () => {
+    addDinner(recipeWithCount);
+    showToast("Recipe added to prep!", "success");
+  };
+
+  const handleApprove = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await fetch(`${API_BASE_URL}/admin/recipes/${recipe.id}/approve`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      showToast("Recipe approved", "success");
+      router.refresh();
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to approve", "error");
+    }
+  };
+
+  const handleReject = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await fetch(`${API_BASE_URL}/admin/recipes/${recipe.id}/reject`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      showToast("Recipe rejected and deleted", "success");
+      router.push("/admin/all-recipes");
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to reject", "error");
+    }
+  };
+
+  return (
+    <main className="max-w-4xl mx-auto px-4 py-8 relative">
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setToastMessage(null)}
+        />
+      )}
+
+      <PrepTracker />
+
+      <div className="rounded-lg p-4 shadow-2xl bg-white flex flex-col justify-between">
+        <h1 className="text-3xl font-bold text-brand text-center">
+          {recipe.title}
+        </h1>
+
+        {recipe.imageUrl && (
+          <div className="relative w-full max-w-[400px] h-64 mb-6 mx-auto">
+            <Image
+              src={recipe.imageUrl}
+              alt={recipe.title}
+              fill
+              className="object-cover rounded-lg"
+            />
+          </div>
+        )}
+
+        <p className="text-gray-700 mb-4">{recipe.description}</p>
+
+        <div className="grid grid-cols-2 gap-4 mb-6 text-sm text-gray-800">
+          <div>
+            <strong>Prep Time:</strong> {recipe.prepTime ?? "N/A"} min
+          </div>
+          <div>
+            <strong>Cook Time:</strong> {recipe.cookTime ?? "N/A"} min
+          </div>
+          <div>
+            <strong>Total Time:</strong> {recipe.totalTime} min
+          </div>
+          <div>
+            <strong>Servings:</strong> {recipe.servings ?? "N/A"}
+          </div>
+          <div>
+            <strong>Course:</strong> {recipe.course}
+          </div>
+        </div>
+
+        <h2 className="text-xl font-semibold mb-2">Ingredients</h2>
+        <ul className="list-disc list-inside mb-6 space-y-1">
+          {recipe.ingredients.map((ingredient) => (
+            <li key={ingredient.id}>
+              {ingredient.quantity ?? "?"} {ingredient.unit ?? ""}{" "}
+              {ingredient.name}
+              {ingredient.preparation && `, ${ingredient.preparation}`}
+              {ingredient.isOptional && " (optional)"}
+            </li>
+          ))}
+        </ul>
+
+        <h2 className="text-xl font-semibold mb-2">Instructions</h2>
+        <p className="whitespace-pre-line text-gray-700">
+          {recipe.instructions}
+        </p>
+
+        <button
+          onClick={handleAddToPrep}
+          className="mt-6 w-full bg-brand text-white rounded px-4 py-2 hover:bg-orange-600 transition-transform duration-100 active:scale-95"
+        >
+          Add to Prep
+        </button>
+
+        {(user.isAdmin || user.id === recipe.userId) && (
+          <button
+            onClick={handleEdit}
+            className="mt-4 w-full bg-teal-600 text-white rounded px-4 py-2 hover:bg-teal-700 transition"
+          >
+            Edit Recipe
+          </button>
+        )}
+
+        {user?.isAdmin && (
+          <div className="mt-8 space-y-4">
+            <h3 className="text-lg font-semibold">Admin Controls</h3>
+            <p className="mt-4 text-sm text-gray-700">
+              <strong>Recipe Status:</strong> {recipe.status}
+            </p>
+
+            <button
+              onClick={handleApprove}
+              className="w-full bg-green-600 text-white rounded px-4 py-2 hover:bg-green-700 transition"
+            >
+              Approve Recipe
+            </button>
+
+            <button
+              onClick={handleReject}
+              className="w-full bg-red-600 text-white rounded px-4 py-2 hover:bg-red-700 transition"
+            >
+              Reject & Delete Recipe
+            </button>
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}
