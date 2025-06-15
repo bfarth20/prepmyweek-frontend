@@ -15,7 +15,7 @@ export default function HomePage() {
     if (!loading && !user) {
       router.push("/login");
     }
-  }, [user, loading]);
+  }, [user, loading, router]);
 
   if (loading || !user) return null;
 

@@ -55,7 +55,7 @@ export function Button({ className, variant, size, href, ...props }: Props) {
   const classNames = cn(button({ variant, size }), className);
 
   if (href) {
-    // Destructure to exclude href from props spread
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { href: _unused, ...restProps } = props as AnchorProps;
     return <Link href={href} className={classNames} {...restProps} />;
   }

@@ -3,12 +3,13 @@ import { notFound } from "next/navigation";
 import API_BASE_URL from "@/lib/config";
 import type { RecipeDetail } from "@/lib/types";
 
-export default async function RecipeDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const recipeId = params.id;
+type Props = {
+  params: Promise<{ id: string }>;
+};
+
+export default async function RecipeDetailPage({ params }: Props) {
+  const resolvedParams = await params; // await the Promise to get actual params
+  const recipeId = resolvedParams.id;
 
   const res = await fetch(`${API_BASE_URL}/recipes/${recipeId}`, {
     cache: "no-store",

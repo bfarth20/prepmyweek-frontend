@@ -4,19 +4,19 @@ import API_BASE_URL from "@/lib/config";
 import type { RecipeDetail, Store } from "@/lib/types";
 import RecipeEditForm from "./RecipeEditForm";
 
-export default async function EditRecipePage({
-  params,
-}: {
-  params: { id: string };
-}) {
+type Props = {
+  params: Promise<{ id: string }>;
+};
+
+export default async function EditRecipePage({ params }: Props) {
   try {
+    const resolvedParams = await params; // await the params Promise
+
     const {
       data: { data: recipe },
     } = await axios.get<{ data: RecipeDetail }>(
-      `${API_BASE_URL}/recipes/${params.id}`,
-      {
-        params: { t: Date.now() },
-      }
+      `${API_BASE_URL}/recipes/${resolvedParams.id}`,
+      { params: { t: Date.now() } }
     );
 
     const {
