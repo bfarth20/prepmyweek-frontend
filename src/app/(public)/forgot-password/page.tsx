@@ -46,7 +46,7 @@ export default function ForgotPasswordPage() {
         const data = await response.json();
         showToast(data.message || "Failed to request reset", "error");
       }
-    } catch (error) {
+    } catch {
       showToast("Network error. Please try again.", "error");
     } finally {
       setIsLoading(false);

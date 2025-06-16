@@ -48,7 +48,7 @@ export default function ResetPasswordPage() {
     setToastType("loading");
 
     try {
-      const res = await fetch(`{$API_BASE_URL}/reset-password`, {
+      const res = await fetch(`${API_BASE_URL}/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, password }),
@@ -64,7 +64,7 @@ export default function ResetPasswordPage() {
         setToastMessage(data.error || "Failed to reset password.");
         setToastType("error");
       }
-    } catch (err) {
+    } catch {
       setToastMessage("Network error. Please try again.");
       setToastType("error");
     } finally {
