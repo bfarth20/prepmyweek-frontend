@@ -154,6 +154,7 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
 
     const payload = {
       ...formData,
+      imageUrl,
       ingredients: formData.ingredients.map((ing) => ({
         recipeIngredientId: ing.recipeIngredientId,
         name: ing.name,
