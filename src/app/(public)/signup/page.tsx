@@ -14,14 +14,16 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [toastType, setToastType] = useState<"success" | "error">("success");
+  const [toastType, setToastType] = useState<"success" | "error" | "loading">(
+    "success"
+  );
 
   const { signup } = useAuth();
   const router = useRouter();
 
   const showToast = (
     message: string,
-    type: "success" | "error" = "success"
+    type: "success" | "error" | "loading" = "success"
   ) => {
     setToastMessage(message);
     setToastType(type);
@@ -29,13 +31,21 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const success = await signup(name, email, password);
-    console.log("Signup result:", success);
-    if (success) {
-      showToast("You are Registered!", "success");
-      router.push("/home");
-    } else {
-      showToast("Server was sleeping...  Try logging in.", "error");
+    showToast("Registering your account...", "loading");
+
+    try {
+      const success = await signup(name, email, password);
+      console.log("Signup result:", success);
+
+      if (success) {
+        showToast("You are Registered!", "success");
+        router.push("/home");
+      } else {
+        showToast("Signup failed. Please try again.", "error");
+      }
+    } catch (err) {
+      console.error("Signup error:", err);
+      showToast("Server was sleeping... Try logging in.", "error");
     }
   };
 

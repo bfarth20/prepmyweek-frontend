@@ -14,14 +14,16 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [toastType, setToastType] = useState<"success" | "error">("success");
+  const [toastType, setToastType] = useState<"success" | "error" | "loading">(
+    "success"
+  );
 
   const { login } = useAuth();
   const router = useRouter();
 
   const showToast = (
     message: string,
-    type: "success" | "error" = "success"
+    type: "success" | "error" | "loading" = "success"
   ) => {
     setToastMessage(message);
     setToastType(type);
@@ -29,11 +31,15 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    showToast("Logging you in...", "loading");
+
     const success = await login(email, password);
+
     if (success) {
       router.push("/home");
       console.log("Login successful");
     } else {
+      setToastMessage(null); // remove loading toast
       showToast("Invalid email or password", "error");
     }
   };
