@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Toast } from "@/components/ui/Toast";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import API_BASE_URL from "@/lib/config";
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -122,5 +122,13 @@ export default function ResetPasswordPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }
