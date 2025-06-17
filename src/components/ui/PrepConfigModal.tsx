@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Dialog } from "@headlessui/react";
 import { Button } from "./Button";
 import { usePrep } from "@/components/context/PrepContext";
-import type { PrepConfig } from "@/lib/types"; // <-- Import your type here
+import type { PrepConfig } from "@/lib/types";
 
 export default function PrepConfigModal({
   isOpen,
@@ -30,7 +30,7 @@ export default function PrepConfigModal({
     setNumberOfLunches,
     setNumberOfDinners,
     setUseLeftovers: setUseLeftoversInContext,
-  } = usePrep(); // 👈 grab setters from context
+  } = usePrep();
 
   const handleSubmit = () => {
     // update context

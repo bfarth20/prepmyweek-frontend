@@ -31,7 +31,7 @@ export default function StoreRecipeClientPage({
   // Pagination state
   const [recipes, setRecipes] = useState<RecipeSummary[]>([]);
   const [page, setPage] = useState(1);
-  const [limit] = useState(20); // or make this configurable
+  const [limit] = useState(20);
   const [totalPages, setTotalPages] = useState(1);
   const [loadingRecipes, setLoadingRecipes] = useState(false);
   const [error, setError] = useState<string | null>(null);

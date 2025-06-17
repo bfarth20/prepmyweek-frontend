@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/Button";
-import { Toast } from "./ui/Toast"; // Adjust import path if needed
+import { Toast } from "./ui/Toast";
 import { useAuth } from "@/components/context/AuthContext";
 import API_BASE_URL from "@/lib/config";
 

@@ -46,7 +46,7 @@ const normalizeIngredients = (
     quantity: ing.quantity,
     unit: ing.unit ?? null,
     storeSection: ing.storeSection ?? "Other",
-    optional: false, // default, adjust as needed
+    optional: false,
     preparation: null,
   }));
 };

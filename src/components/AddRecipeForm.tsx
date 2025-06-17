@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Input } from "./ui/Input";
 import { Button } from "./ui/Button";
-import API_BASE_URL from "@/lib/config"; //<--needs Axios
+import API_BASE_URL from "@/lib/config";
 import { useRouter } from "next/navigation";
 
 interface IngredientInput {
@@ -28,7 +28,6 @@ interface AddRecipeFormProps {
 
 interface ApiError {
   message: string;
-  // optionally other fields like code, path, etc.
 }
 
 export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
@@ -182,7 +181,6 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
       const data = await res.json();
 
       if (!res.ok) {
-        // Don't call res.json() again here; use the already parsed 'data'
         const errorMessages = Array.isArray(data.error)
           ? (data.error as ApiError[]).map((err) => err.message).join(", ")
           : data.error || "Failed to submit recipe";
