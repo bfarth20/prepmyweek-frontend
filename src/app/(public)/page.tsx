@@ -29,7 +29,7 @@ export default function WelcomePage() {
           <Button href="/signup">Sign Up</Button>
         </div>
         <Button href="/guest-view" variant="secondary">
-          Continue as Guest
+          Want to know more? Take a Tour
         </Button>
       </div>
     </div>

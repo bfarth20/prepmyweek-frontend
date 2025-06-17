@@ -24,7 +24,8 @@ export default function GuestPage() {
           />
         </div>
         <p className="text-gray-700 text-center">
-          Start by picking your preferred grocery store.
+          PrepMyWeek is a recipe and shopping app aimed to simplify your weekly
+          grocery runs. Start by picking your preferred grocery store.
         </p>
       </section>
 
@@ -78,8 +79,9 @@ export default function GuestPage() {
           />
         </div>
         <p className="text-gray-700">
-          Click on any of your selected recipes to view details, or go to your
-          grocery list to start shopping
+          Click on any of your selected recipes to view details, if you like
+          your selections hit the Save to CurrentPrep button to keep the
+          selections all week long, or go to your grocery list to start shopping
         </p>
       </section>
 
@@ -95,7 +97,11 @@ export default function GuestPage() {
           />
         </div>
         <p className="text-gray-700">
-          Groceries are categorized by section of the store for easy shopping
+          Groceries are categorized by section of the store for easy shopping.
+          If you use the grocery list in current prep, you can also add other
+          groceries you need to shop for, or print the grocery list if you
+          prefer paper. If you like your Current Prep, you can save it and
+          access it under PastPreps on your profile!
         </p>
       </section>
 
