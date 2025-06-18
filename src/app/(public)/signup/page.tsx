@@ -57,7 +57,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-color-background flex flex-col items-center px-4">
+    <>
       {toastMessage && (
         <Toast
           message={toastMessage}
@@ -65,83 +65,86 @@ export default function SignupPage() {
           onClose={() => setToastMessage(null)}
         />
       )}
-
-      <div className="flex items-center gap-2 mb-8">
-        <div className="relative w-20 h-20">
-          <Image
-            src="/logoNoBg.png"
-            alt="PrepMyWeek Logo"
-            fill
-            className="object-contain"
-            priority
-          />
+      <div className="min-h-screen bg-color-background flex flex-col items-center px-4">
+        <div className="flex items-center gap-2 mb-8">
+          <div className="relative w-20 h-20">
+            <Image
+              src="/logoNoBg.png"
+              alt="PrepMyWeek Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+          <h1 className="text-4xl font-bold font-brand text-brand">
+            PrepMyWeek
+          </h1>
         </div>
-        <h1 className="text-4xl font-bold font-brand text-brand">PrepMyWeek</h1>
+
+        <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
+          <h2 className="text-2xl font-semibold text-center text-brand font-brand mb-6">
+            Create an Account
+          </h2>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Name
+              </label>
+              <Input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your Name"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email Address
+              </label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Confirm Password
+              </label>
+              <Input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <Button type="submit" className="w-full mt-2">
+              Sign Up
+            </Button>
+          </form>
+        </div>
       </div>
-
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-center text-brand font-brand mb-6">
-          Create an Account
-        </h2>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Name
-            </label>
-            <Input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Your Name"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email Address
-            </label>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Confirm Password
-            </label>
-            <Input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
-          </div>
-
-          <Button type="submit" className="w-full mt-2">
-            Sign Up
-          </Button>
-        </form>
-      </div>
-    </div>
+    </>
   );
 }

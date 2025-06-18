@@ -211,60 +211,84 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
         />
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <input
-          type="text"
-          value={formData.title}
-          onChange={(e) => handleChange("title", e.target.value)}
-          className="w-full border rounded px-3 py-2"
-          placeholder="Title"
-        />
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <h3 className="font-bold text-brand py-0 space-y-2">Name</h3>
+          <input
+            type="text"
+            value={formData.title}
+            onChange={(e) => handleChange("title", e.target.value)}
+            className="w-full border rounded px-3 py-2"
+            placeholder="Title"
+          />
+        </div>
 
-        <textarea
-          value={formData.description ?? ""}
-          onChange={(e) => handleChange("description", e.target.value)}
-          className="w-full border rounded px-3 py-2"
-          placeholder="Description"
-        />
+        <div>
+          <h3 className="font-bold text-brand py-0 space-y-2">Description</h3>
+          <textarea
+            value={formData.description ?? ""}
+            onChange={(e) => handleChange("description", e.target.value)}
+            className="w-full border rounded px-3 py-2"
+            placeholder="Description"
+          />
+        </div>
 
-        <textarea
-          value={formData.instructions}
-          onChange={(e) => handleChange("instructions", e.target.value)}
-          className="w-full border rounded px-3 py-2"
-          placeholder="Instructions"
-        />
+        <div>
+          <h3 className="font-bold text-brand py-0 space-y-2">Instructions</h3>
+          <textarea
+            value={formData.instructions}
+            onChange={(e) => handleChange("instructions", e.target.value)}
+            className="w-full border rounded px-3 py-2 h-50"
+            placeholder="Instructions"
+          />
+        </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <input
-            type="number"
-            value={formData.prepTime ?? ""}
-            onChange={(e) => handleChange("prepTime", Number(e.target.value))}
-            placeholder="Prep Time"
-            className="border rounded px-3 py-2"
-          />
-          <input
-            type="number"
-            value={formData.cookTime ?? ""}
-            onChange={(e) => handleChange("cookTime", Number(e.target.value))}
-            placeholder="Cook Time"
-            className="border rounded px-3 py-2"
-          />
-          <input
-            type="number"
-            value={formData.servings ?? ""}
-            onChange={(e) => handleChange("servings", Number(e.target.value))}
-            placeholder="Servings"
-            className="border rounded px-3 py-2"
-          />
-          <select
-            value={formData.course}
-            onChange={(e) => handleChange("course", e.target.value)}
-            className="border rounded px-3 py-2"
-          >
-            <option value="BREAKFAST">Breakfast</option>
-            <option value="LUNCH">Lunch</option>
-            <option value="DINNER">Dinner</option>
-          </select>
+          <div>
+            <h3 className="font-bold text-brand mb-1">Prep Time</h3>
+            <input
+              type="number"
+              value={formData.prepTime ?? ""}
+              onChange={(e) => handleChange("prepTime", Number(e.target.value))}
+              placeholder="Prep Time"
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <h3 className="font-bold text-brand mb-1">Cook Time</h3>
+            <input
+              type="number"
+              value={formData.cookTime ?? ""}
+              onChange={(e) => handleChange("cookTime", Number(e.target.value))}
+              placeholder="Cook Time"
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <h3 className="font-bold text-brand mb-1">Servings</h3>
+            <input
+              type="number"
+              value={formData.servings ?? ""}
+              onChange={(e) => handleChange("servings", Number(e.target.value))}
+              placeholder="Servings"
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <h3 className="font-bold text-brand mb-1">Course</h3>
+            <select
+              value={formData.course}
+              onChange={(e) => handleChange("course", e.target.value)}
+              className="w-full border rounded px-3 py-2"
+            >
+              <option value="BREAKFAST">Breakfast</option>
+              <option value="LUNCH">Lunch</option>
+              <option value="DINNER">Dinner</option>
+            </select>
+          </div>
         </div>
         {imageUrl && (
           <div className="w-full max-w-md mx-auto h-48 relative mb-4">
@@ -318,7 +342,7 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
           </div>
         </div>
 
-        <h3 className="font-semibold text-lg mt-6">Ingredients</h3>
+        <h3 className="font-bold text-brand text-lg mt-5">Ingredients</h3>
         {formData.ingredients.map((ing) => (
           <div
             key={ing.recipeIngredientId}
