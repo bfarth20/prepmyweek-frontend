@@ -10,7 +10,7 @@ export default function StoreCard({
   return (
     <div
       onClick={onSelect}
-      className="rounded-2xl shadow-md p-4 bg-white hover:shadow-lg transition-shadow transition-transform duration-100 active:scale-95 flex items-center gap-4 cursor-pointer"
+      className="rounded-2xl shadow-md p-8 bg-white hover:shadow-lg transition-shadow transition-transform duration-100 active:scale-95 flex items-center justify-between cursor-pointer"
     >
       {store.logoUrl ? (
         <Image
@@ -25,7 +25,9 @@ export default function StoreCard({
           No Logo
         </div>
       )}
-      <h3 className="text-xl font-brand text-brand">{store.name}</h3>
+      <h3 className="text-xl font-brand font-bold px-5 text-brand">
+        {store.name}
+      </h3>
     </div>
   );
 }
