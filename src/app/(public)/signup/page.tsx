@@ -13,6 +13,8 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [region, setRegion] = useState("");
+  const [preferredStore, setPreferredStore] = useState("");
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"success" | "error" | "loading">(
@@ -41,7 +43,13 @@ export default function SignupPage() {
     showToast("Registering your account...", "loading");
 
     try {
-      const success = await signup(name, email, password);
+      const success = await signup(
+        name,
+        email,
+        password,
+        region,
+        preferredStore
+      );
       console.log("Signup result:", success);
 
       if (success) {
@@ -137,6 +145,57 @@ export default function SignupPage() {
                 placeholder="••••••••"
                 required
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Region
+              </label>
+              <select
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+                className="w-full border rounded-md px-3 py-2 text-sm shadow-sm"
+                required
+              >
+                <option value="">Select a region</option>
+                <option value="Southeast">Southeast</option>
+                <option value="Northeast">Northeast</option>
+                <option value="Midwest">Midwest</option>
+                <option value="Southwest">Southwest</option>
+                <option value="West">West</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Preferred Store
+              </label>
+              <select
+                value={preferredStore}
+                onChange={(e) => setPreferredStore(e.target.value)}
+                className="w-full border rounded-md px-3 py-2 text-sm shadow-sm"
+                required
+              >
+                <option value="">Select a store</option>
+                <option value="Kroger">Kroger</option>
+                <option value="Publix">Publix</option>
+                <option value="Food Lion">Food Lion</option>
+                <option value="Piggly Wiggly">Piggly Wiggly</option>
+                <option value="Ingles">Ingles</option>
+                <option value="Hannaford">Hannaford</option>
+                <option value="H-E-B">H-E-B</option>
+                <option value="Giant Food">Giant Food</option>
+                <option value="Albertsons">Albertsons</option>
+                <option value="Safeway">Safeway</option>
+                <option value="Ralphs">Ralphs</option>
+                <option value="Fred Meyer">Fred Meyer</option>
+                <option value="Jewel-Osco">Jewel-Osco</option>
+                <option value="Stop & Shop">Stop & Shop</option>
+                <option value="ShopRite">ShopRite</option>
+                <option value="King Soopers">King Soopers</option>
+                <option value="Meijer">Meijer</option>
+                <option value="Rouses">Rouses Markets</option>
+              </select>
             </div>
 
             <Button type="submit" className="w-full mt-2">

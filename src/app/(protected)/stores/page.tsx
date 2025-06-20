@@ -82,13 +82,37 @@ export default function StoresSelectionPage() {
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
-        {stores.map((store) => (
-          <StoreCard
-            key={store.id}
-            store={store}
-            onSelect={() => handleStoreSelect(store)}
-          />
-        ))}
+        {/* Preferred store card first */}
+        <StoreCard
+          key="preferred-store"
+          store={{
+            id: 1, // Always points to store id 1
+            name: user.preferredStore,
+            logoUrl: `/StoresLogos/${user.preferredStore
+              ?.toLowerCase()
+              .replace(/[\s']/g, "")
+              .replace(/&/g, "and")}.png`,
+          }}
+          onSelect={() =>
+            handleStoreSelect({
+              id: 1,
+              name: user.preferredStore,
+              logoUrl: `/StoresLogos/${user.preferredStore
+                ?.toLowerCase()
+                .replace(/[\s']/g, "")
+                .replace(/&/g, "and")}.png`,
+            })
+          }
+        />
+        {stores
+          .filter((store) => store.id !== 1)
+          .map((store) => (
+            <StoreCard
+              key={store.id}
+              store={store}
+              onSelect={() => handleStoreSelect(store)}
+            />
+          ))}
       </div>
 
       {isModalOpen && selectedStore && (

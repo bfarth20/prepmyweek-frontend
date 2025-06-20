@@ -4,7 +4,7 @@ export default function StoreCard({
   store,
   onSelect,
 }: {
-  store: { name: string; logoUrl?: string | null };
+  store: { id: number; name: string; logoUrl?: string | null };
   onSelect: () => void;
 }) {
   return (

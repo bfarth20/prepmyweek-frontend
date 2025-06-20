@@ -16,6 +16,8 @@ interface User {
   name: string;
   email: string;
   isAdmin: boolean;
+  region: string;
+  preferredStore: string;
 }
 
 interface AuthContextType {
@@ -24,7 +26,13 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
-  signup: (name: string, email: string, password: string) => Promise<boolean>;
+  signup: (
+    name: string,
+    email: string,
+    password: string,
+    region: string,
+    preferredStore: string
+  ) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -97,13 +105,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signup = async (
     name: string,
     email: string,
-    password: string
+    password: string,
+    region: string,
+    preferredStore: string
   ): Promise<boolean> => {
     try {
       const { data } = await axios.post(`${API_BASE_URL}/users`, {
         name,
         email,
         password,
+        region,
+        preferredStore,
       });
       localStorage.setItem("token", data.token);
       setToken(data.token);

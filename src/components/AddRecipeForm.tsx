@@ -6,6 +6,7 @@ import { Input } from "./ui/Input";
 import { Button } from "./ui/Button";
 import API_BASE_URL from "@/lib/config";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/context/AuthContext";
 
 interface IngredientInput {
   id: string;
@@ -41,6 +42,7 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
   const [servings, setServings] = useState<number | null>(null);
   const [selectedStoreIds, setSelectedStoreIds] = useState<number[]>([]);
   const router = useRouter();
+  const { user } = useAuth();
   const [ingredients, setIngredients] = useState<IngredientInput[]>([
     {
       id: uuidv4(),
@@ -252,6 +254,7 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
             <option value="BREAKFAST">Breakfast</option>
             <option value="LUNCH">Lunch</option>
             <option value="DINNER">Dinner</option>
+            <option value="SNACK_SIDE">Snack or Side</option>
           </select>
         </div>
 
@@ -317,16 +320,31 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
             Available at:
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {storeList.map((store) => (
-              <label key={store.id} className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={selectedStoreIds.includes(store.id)}
-                  onChange={() => handleStoreCheckboxChange(store.id)}
-                />
-                <span className="text-sm text-gray-800">{store.name}</span>
-              </label>
-            ))}
+            {/* Preferred store checkbox (always store ID 1) */}
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={selectedStoreIds.includes(1)}
+                onChange={() => handleStoreCheckboxChange(1)}
+              />
+              <span className="text-sm text-gray-800">
+                {user?.preferredStore || "Preferred Store"}
+              </span>
+            </label>
+
+            {/* All other stores, skipping ID 1 */}
+            {storeList
+              .filter((store) => store.id !== 1)
+              .map((store) => (
+                <label key={store.id} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedStoreIds.includes(store.id)}
+                    onChange={() => handleStoreCheckboxChange(store.id)}
+                  />
+                  <span className="text-sm text-gray-800">{store.name}</span>
+                </label>
+              ))}
           </div>
         </div>
 
@@ -355,6 +373,7 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
             <option value="/Images/Recipes/Seafood.png">Seafood</option>
             <option value="/Images/Recipes/Soup.png">Soup</option>
             <option value="/Images/Recipes/StirFry.png">Stirfry</option>
+            <option value="/Images/Recipes/Dessert.png">Dessert</option>
           </select>
         </div>
 

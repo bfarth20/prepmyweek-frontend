@@ -222,7 +222,6 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
             placeholder="Title"
           />
         </div>
-
         <div>
           <h3 className="font-bold text-brand py-0 space-y-2">Description</h3>
           <textarea
@@ -232,7 +231,6 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
             placeholder="Description"
           />
         </div>
-
         <div>
           <h3 className="font-bold text-brand py-0 space-y-2">Instructions</h3>
           <textarea
@@ -242,7 +240,6 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
             placeholder="Instructions"
           />
         </div>
-
         <div className="grid grid-cols-2 gap-4">
           <div>
             <h3 className="font-bold text-brand mb-1">Prep Time</h3>
@@ -287,6 +284,7 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
               <option value="BREAKFAST">Breakfast</option>
               <option value="LUNCH">Lunch</option>
               <option value="DINNER">Dinner</option>
+              <option value="SNACK_SIDE">Snack or Side</option>
             </select>
           </div>
         </div>
@@ -321,27 +319,42 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
             <option value="/Images/Recipes/Sandwich.png">Sandwich</option>
             <option value="/Images/Recipes/Seafood.png">Seafood</option>
             <option value="/Images/Recipes/StirFry.png">Stirfry</option>
+            <option value="/Images/Recipes/Dessert.png">Dessert</option>
           </select>
         </div>
-
         <div className="mb-4">
           <h3 className="text-sm font-medium text-gray-700 mb-2">
             Available at:
           </h3>
+
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {storeList.map((store) => (
-              <label key={store.id} className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={selectedStoreIds.includes(store.id)}
-                  onChange={() => handleStoreCheckboxChange(store.id)}
-                />
-                <span className="text-sm text-gray-800">{store.name}</span>
-              </label>
-            ))}
+            {/* Preferred store first (ID 1) */}
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={selectedStoreIds.includes(1)}
+                onChange={() => handleStoreCheckboxChange(1)}
+              />
+              <span className="text-sm text-gray-800">
+                {user?.preferredStore || "Preferred Store"}
+              </span>
+            </label>
+
+            {/* All other stores, skipping ID 1 */}
+            {storeList
+              .filter((store) => store.id !== 1)
+              .map((store) => (
+                <label key={store.id} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedStoreIds.includes(store.id)}
+                    onChange={() => handleStoreCheckboxChange(store.id)}
+                  />
+                  <span className="text-sm text-gray-800">{store.name}</span>
+                </label>
+              ))}
           </div>
         </div>
-
         <h3 className="font-bold text-brand text-lg mt-5">Ingredients</h3>
         {formData.ingredients.map((ing) => (
           <div
@@ -458,7 +471,6 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
         >
           + Add Ingredient
         </button>
-
         <button
           type="submit"
           className="w-full bg-brand text-white py-2 px-4 rounded hover:bg-brand-dark transition"

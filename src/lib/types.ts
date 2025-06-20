@@ -3,6 +3,8 @@ export interface User {
   name: string;
   email: string;
   isAdmin: boolean;
+  region: string;
+  preferredStore: string;
 }
 
 export interface Ingredient {
