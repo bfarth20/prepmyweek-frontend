@@ -182,6 +182,7 @@ export default function SignupPage() {
                 <option value="Food Lion">Food Lion</option>
                 <option value="Piggly Wiggly">Piggly Wiggly</option>
                 <option value="Ingles">Ingles</option>
+                <option value="ACME Market">ACME Market</option>
                 <option value="Hannaford">Hannaford</option>
                 <option value="H-E-B">H-E-B</option>
                 <option value="Giant Food">Giant Food</option>
@@ -193,6 +194,7 @@ export default function SignupPage() {
                 <option value="Stop & Shop">Stop & Shop</option>
                 <option value="ShopRite">ShopRite</option>
                 <option value="King Soopers">King Soopers</option>
+                <option value="Frys">Fry&#39;s</option>
                 <option value="Meijer">Meijer</option>
                 <option value="Rouses">Rouses Markets</option>
               </select>
