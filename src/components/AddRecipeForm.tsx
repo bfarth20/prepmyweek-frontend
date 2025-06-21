@@ -372,8 +372,12 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
             <option value="/Images/Recipes/Sandwich.png">Sandwich</option>
             <option value="/Images/Recipes/Seafood.png">Seafood</option>
             <option value="/Images/Recipes/Soup.png">Soup</option>
-            <option value="/Images/Recipes/StirFry.png">Stirfry</option>
+            <option value="/Images/Recipes/Burger.png">Burger</option>
             <option value="/Images/Recipes/Dessert.png">Dessert</option>
+            <option value="/Images/Recipes/RiceBowl.png">Rice Bowl</option>
+            <option value="/Images/Recipes/LettuceWrap.png">
+              Lettuce Wrap
+            </option>
           </select>
         </div>
 
