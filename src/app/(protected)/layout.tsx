@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuth } from "@/components/context/AuthContext";
 import Sidebar from "@/components/ui/Sidebar";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { ReactNode } from "react";
 
 interface AppLayoutProps {
@@ -27,6 +28,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
         )}
         <main className="flex-1 p-6 bg-color-background">{children}</main>
       </div>
+      <Footer />
     </div>
   );
 }

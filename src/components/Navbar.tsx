@@ -14,9 +14,9 @@ export default function Navbar({ onLogoClick }: NavbarProps) {
 
   const handleLogoClick = () => {
     if (onLogoClick) {
-      onLogoClick(); // logged in → open sidebar
+      onLogoClick();
     } else {
-      router.push("/"); // not logged in → go home
+      router.push("/home");
     }
   };
 

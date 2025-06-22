@@ -26,7 +26,18 @@ export default function StoreRecipeClientPage({
 }) {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const { addDinner, addLunch } = usePrep();
+  const {
+    selectedDinners,
+    selectedLunches,
+    addDinner,
+    removeDinner,
+    addLunch,
+    removeLunch,
+  } = usePrep();
+  const selectedRecipeIds = [
+    ...selectedDinners.map((r) => r.id),
+    ...selectedLunches.map((r) => r.id),
+  ];
 
   // Pagination state
   const [recipes, setRecipes] = useState<RecipeSummary[]>([]);
@@ -75,10 +86,20 @@ export default function StoreRecipeClientPage({
   if (loading || !user) return null;
 
   const handleAddToPrep = (recipe: RecipeSummary) => {
+    const isSelected = selectedRecipeIds.includes(recipe.id);
+
     if (recipe.course === "LUNCH") {
-      addLunch(recipe);
+      if (isSelected) {
+        removeLunch(recipe.id);
+      } else {
+        addLunch(recipe);
+      }
     } else {
-      addDinner(recipe);
+      if (isSelected) {
+        removeDinner(recipe.id);
+      } else {
+        addDinner(recipe);
+      }
     }
   };
 
@@ -107,6 +128,7 @@ export default function StoreRecipeClientPage({
                 key={recipe.id}
                 recipe={recipe}
                 onAddToPrep={handleAddToPrep}
+                isSelected={selectedRecipeIds.includes(recipe.id)}
               />
             ))}
           </div>

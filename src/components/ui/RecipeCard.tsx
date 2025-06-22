@@ -5,14 +5,21 @@ import Image from "next/image";
 import { RecipeSummary } from "@/lib/types";
 import { Button } from "@/components/ui/Button";
 
-type RecipeCardProps = {
+export default function RecipeCard({
+  recipe,
+  onAddToPrep,
+  isSelected = false,
+}: {
   recipe: RecipeSummary;
   onAddToPrep?: (recipe: RecipeSummary) => void;
-};
-
-export default function RecipeCard({ recipe, onAddToPrep }: RecipeCardProps) {
+  isSelected?: boolean;
+}) {
   return (
-    <div className="border rounded-lg px-2 py-3 shadow-lg bg-white flex flex-col h-full transition-transform duration-100">
+    <div
+      className={`border-4 rounded-lg px-2 py-3 shadow-lg flex flex-col h-full transition-transform duration-100 bg-white ${
+        isSelected ? "border-green-600" : "border-gray-200"
+      }`}
+    >
       {recipe.imageUrl && (
         <Link
           href={`/recipes/${recipe.id}`}
@@ -52,7 +59,7 @@ export default function RecipeCard({ recipe, onAddToPrep }: RecipeCardProps) {
           }}
           className="transition-transform duration-100 active:scale-95 mt-2"
         >
-          Add to Prep
+          {isSelected ? "Remove from Prep" : "Add to Prep"}
         </Button>
       )}
     </div>
