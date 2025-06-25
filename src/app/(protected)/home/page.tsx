@@ -22,7 +22,7 @@ export default function HomePage() {
   return (
     <div className="p-6 max-w-3xl mx-auto">
       {user?.isAdmin && (
-        <p className="mb-4 text-green-600 font-semibold">sup dude</p>
+        <p className="mb-4 text-green-600 font-semibold">Welcome Admin</p>
       )}
       <h1 className="text-3xl text-brand font-bold mb-4">
         Welcome, {user?.name || "Friend"}!
