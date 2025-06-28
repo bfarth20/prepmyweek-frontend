@@ -1,4 +1,3 @@
-// app/layout.tsx
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter, Montserrat } from "next/font/google";
@@ -45,6 +44,21 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${montserrat.variable}`}>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "PrepMyWeek",
+              url: "https://www.prepmyweek.com",
+              logo: "https://www.prepmyweek.com/logo-112x112.png",
+            }),
+          }}
+        />
+      </head>
       <body>
         <AuthProvider>
           <PrepProvider>{children}</PrepProvider>
