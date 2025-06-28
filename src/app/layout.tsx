@@ -9,8 +9,33 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
 const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-brand" });
 
 export const metadata: Metadata = {
-  title: "PrepMyWeek",
-  description: "Your weekly meal prep planner",
+  title: "PrepMyWeek | Smart Meal Planning Based on Real Grocery Inventory",
+  description:
+    "PrepMyWeek helps you plan a week of meals using real grocery store recipes. Choose your store, set preferences, and get a grocery list instantly.",
+  metadataBase: new URL("https://www.prepmyweek.com"),
+  openGraph: {
+    title: "PrepMyWeek | Smart Meal Planning Based on Real Grocery Inventory",
+    description:
+      "PrepMyWeek helps you plan a week of meals using real grocery store recipes. Choose your store, set preferences, and get a grocery list instantly.",
+    url: "https://www.prepmyweek.com",
+    siteName: "PrepMyWeek",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "PrepMyWeek preview image",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PrepMyWeek | Smart Meal Planning Based on Real Grocery Inventory",
+    description:
+      "PrepMyWeek helps you plan meals based on real grocery store inventory. Get recipes, generate a grocery list, and make weeknight dinners easier.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
