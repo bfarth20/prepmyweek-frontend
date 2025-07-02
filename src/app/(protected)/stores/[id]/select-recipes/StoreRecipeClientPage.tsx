@@ -47,6 +47,10 @@ export default function StoreRecipeClientPage({
   const [loadingRecipes, setLoadingRecipes] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  type SortOption = "newest" | "ingredients" | "cookTime";
+
+  const [sortOption, setSortOption] = useState<SortOption>("newest");
+
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
@@ -106,6 +110,19 @@ export default function StoreRecipeClientPage({
   const handlePrevPage = () => setPage((p) => Math.max(p - 1, 1));
   const handleNextPage = () => setPage((p) => Math.min(p + 1, totalPages));
 
+  const sortedRecipes = [...recipes].sort((a, b) => {
+    if (sortOption === "newest") {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
+    if (sortOption === "ingredients") {
+      return (a.ingredientCount ?? 0) - (b.ingredientCount ?? 0);
+    }
+    if (sortOption === "cookTime") {
+      return (a.totalTime ?? 0) - (b.totalTime ?? 0);
+    }
+    return 0;
+  });
+
   return (
     <main className="px-2 sm:px-4 md:px-6 py-6 max-w-7xl mx-auto relative">
       <PrepTracker />
@@ -122,8 +139,23 @@ export default function StoreRecipeClientPage({
         <p className="text-gray-500">No recipes found for this store.</p>
       ) : (
         <>
+          <div className="flex items-center justify-end mb-4">
+            <label htmlFor="sort" className="mr-2 text-sm font-medium">
+              Sort by:
+            </label>
+            <select
+              id="sort"
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value as SortOption)}
+              className="border rounded px-2 py-1 text-sm bg-white"
+            >
+              <option value="newest">Most Recent</option>
+              <option value="ingredients">Fewest Ingredients</option>
+              <option value="cookTime">Shortest Cook Time</option>
+            </select>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
-            {recipes.map((recipe) => (
+            {sortedRecipes.map((recipe) => (
               <RecipeCard
                 key={recipe.id}
                 recipe={recipe}
