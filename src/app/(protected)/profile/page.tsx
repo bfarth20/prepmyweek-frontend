@@ -12,6 +12,7 @@ interface Recipe {
   title: string;
   imageUrl: string | null;
   course: string;
+  isVegetarian: boolean;
   status: "pending" | "approved" | "rejected";
 }
 
@@ -138,6 +139,14 @@ export default function ProfilePage() {
                   className="object-cover rounded mb-2 mx-auto"
                 />
               )}
+
+              {/* Vegetarian Badge */}
+              {recipe.isVegetarian && (
+                <span className="absolute top-2 left-2 inline-block bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full uppercase tracking-wide">
+                  Vegetarian
+                </span>
+              )}
+
               <h3 className="text-lg font-medium">{recipe.title}</h3>
               <p className="text-sm text-gray-500 capitalize">
                 {recipe.course}
