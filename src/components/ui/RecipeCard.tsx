@@ -31,6 +31,11 @@ export default function RecipeCard({
             fill
             className="object-cover cursor-pointer"
           />
+          {recipe.isVegetarian && (
+            <span className="absolute top-2 left-2 inline-block bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full uppercase tracking-wide z-10">
+              Vegetarian
+            </span>
+          )}
         </Link>
       )}
 

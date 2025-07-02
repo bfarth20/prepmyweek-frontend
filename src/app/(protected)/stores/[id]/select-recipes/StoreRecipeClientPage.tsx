@@ -51,6 +51,9 @@ export default function StoreRecipeClientPage({
 
   const [sortOption, setSortOption] = useState<SortOption>("newest");
 
+  type FilterOption = "all" | "dinner" | "lunch" | "vegetarian";
+  const [filter, setFilter] = useState<FilterOption>("all");
+
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
@@ -110,9 +113,20 @@ export default function StoreRecipeClientPage({
   const handlePrevPage = () => setPage((p) => Math.max(p - 1, 1));
   const handleNextPage = () => setPage((p) => Math.min(p + 1, totalPages));
 
-  const sortedRecipes = [...recipes].sort((a, b) => {
+  const filteredRecipes = recipes.filter((recipe) => {
+    if (filter === "all") return true;
+    if (filter === "vegetarian") return recipe.isVegetarian;
+    if (filter === "dinner") return recipe.course === "DINNER";
+    if (filter === "lunch") return recipe.course === "LUNCH";
+    return true;
+  });
+
+  const sortedRecipes = filteredRecipes.sort((a, b) => {
     if (sortOption === "newest") {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      const toDate = (dateStr?: string) =>
+        dateStr ? new Date(dateStr.replace(" ", "T")) : new Date(0);
+
+      return toDate(b.createdAt).getTime() - toDate(a.createdAt).getTime();
     }
     if (sortOption === "ingredients") {
       return (a.ingredientCount ?? 0) - (b.ingredientCount ?? 0);
@@ -139,7 +153,24 @@ export default function StoreRecipeClientPage({
         <p className="text-gray-500">No recipes found for this store.</p>
       ) : (
         <>
-          <div className="flex items-center justify-end mb-4">
+          <div className="flex items-center justify-end mb-4 space-x-4">
+            {/* Filter Dropdown */}
+            <label htmlFor="filter" className="mr-2 text-sm font-medium">
+              Filter:
+            </label>
+            <select
+              id="filter"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value as FilterOption)}
+              className="border rounded px-2 py-1 text-sm bg-white"
+            >
+              <option value="all">No Filter</option>
+              <option value="dinner">Dinner</option>
+              <option value="lunch">Lunch</option>
+              <option value="vegetarian">Vegetarian</option>
+            </select>
+
+            {/* Existing Sort Dropdown */}
             <label htmlFor="sort" className="mr-2 text-sm font-medium">
               Sort by:
             </label>

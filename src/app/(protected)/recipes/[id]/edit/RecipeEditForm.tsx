@@ -20,6 +20,9 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
 
   const [formData, setFormData] = useState<RecipeDetail>(recipe);
   const [imageUrl, setImageUrl] = useState(recipe.imageUrl || "");
+  const [isVegetarian, setIsVegetarian] = useState<boolean>(
+    recipe.isVegetarian || false
+  );
   const [selectedStoreIds, setSelectedStoreIds] = useState<number[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"success" | "error">("success");
@@ -46,6 +49,7 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
 
   useEffect(() => {
     setFormData(recipe);
+    setIsVegetarian(recipe.isVegetarian || false);
   }, [recipe]);
 
   if (loading || !user) return null;
@@ -154,6 +158,7 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
 
     const payload = {
       ...formData,
+      isVegetarian,
       imageUrl,
       ingredients: formData.ingredients.map((ing) => ({
         recipeIngredientId: ing.recipeIngredientId,
@@ -272,6 +277,18 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
               placeholder="Servings"
               className="w-full border rounded px-3 py-2"
             />
+          </div>
+
+          <div className="mb-6">
+            <label className="inline-flex items-center text-sm text-gray-700 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isVegetarian}
+                onChange={(e) => setIsVegetarian(e.target.checked)}
+                className="form-checkbox h-5 w-5 text-brand"
+              />
+              <span className="ml-2 select-none">Vegetarian</span>
+            </label>
           </div>
 
           <div>

@@ -99,6 +99,14 @@ export default function RecipeDetailClientPage({
           {recipe.title}
         </h1>
 
+        {recipe.isVegetarian && (
+          <div className="text-center mt-2 mb-4">
+            <span className="inline-block bg-green-200 text-green-800 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wide">
+              Vegetarian
+            </span>
+          </div>
+        )}
+
         {recipe.imageUrl && (
           <div className="relative w-full max-w-[400px] h-64 mb-6 mx-auto">
             <Image

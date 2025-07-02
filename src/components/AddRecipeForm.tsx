@@ -43,6 +43,7 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
   const [selectedStoreIds, setSelectedStoreIds] = useState<number[]>([]);
   const router = useRouter();
   const { user } = useAuth();
+  const [isVegetarian, setIsVegetarian] = useState(false);
   const [ingredients, setIngredients] = useState<IngredientInput[]>([
     {
       id: uuidv4(),
@@ -166,6 +167,7 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
         isOptional: i.isOptional,
         preparation: i.preparation?.trim() || null,
       })),
+      isVegetarian,
     };
 
     try {
@@ -300,6 +302,18 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
               placeholder="e.g. 4"
             />
           </div>
+        </div>
+
+        <div className="mb-6">
+          <label className="inline-flex items-center text-sm text-gray-700 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={isVegetarian}
+              onChange={(e) => setIsVegetarian(e.target.checked)}
+              className="form-checkbox h-5 w-5 text-brand"
+            />
+            <span className="ml-2 select-none">Vegetarian</span>
+          </label>
         </div>
 
         <div>
