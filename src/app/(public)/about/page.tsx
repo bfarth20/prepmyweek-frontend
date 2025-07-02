@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Head from "next/head";
+import Link from "next/link";
 
 export default function AboutPage() {
   return (
@@ -11,7 +12,7 @@ export default function AboutPage() {
       <main className="max-w-3xl mx-auto px-4 py-12">
         <div className="flex flex-col items-center text-center">
           <Image
-            src="/Images/ProfilePhoto.jpeg" // Replace with your actual photo path in /public
+            src="/Images/ProfilePhoto.jpeg"
             alt="Benjamin Farthing"
             width={128}
             height={128}
@@ -31,7 +32,7 @@ export default function AboutPage() {
                 I&#39;m a full-stack web developer based in Atlanta, Georgia,
                 focused on creating clean, practical tools that solve everyday
                 problems. I enjoy working across the stack but have a strong
-                interest in backend logic, architecture, and data-driven
+                interest in backend logic, architecture, and data driven
                 features.
               </p>
             </section>
@@ -46,10 +47,23 @@ export default function AboutPage() {
                 food. This app streamlines the meal prep process by combining
                 real grocery store data with smart recipe selection, leftovers
                 tracking, and automatic list generation. It&#39;s both a
-                technical challenge and a personal solution — and I&#39;m proud
+                technical challenge and a personal solution, and I&#39;m proud
                 of how it&#39;s turned out.
               </p>
             </section>
+          </div>
+          <div className="mt-12 text-center">
+            <p className="text-lg text-brand font-semibold mb-2">
+              Want to know more?
+            </p>
+            <Link
+              href="https://benjaminfarthing.wixsite.com/benjaminfarthingwebs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline font-medium"
+            >
+              Go to Portfolio Page &rarr;
+            </Link>
           </div>
         </div>
       </main>
