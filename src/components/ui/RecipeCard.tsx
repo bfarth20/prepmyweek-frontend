@@ -9,10 +9,12 @@ export default function RecipeCard({
   recipe,
   onAddToPrep,
   isSelected = false,
+  showPrepTracker = true,
 }: {
   recipe: RecipeSummary;
   onAddToPrep?: (recipe: RecipeSummary) => void;
   isSelected?: boolean;
+  showPrepTracker?: boolean;
 }) {
   return (
     <div
@@ -22,7 +24,9 @@ export default function RecipeCard({
     >
       {recipe.imageUrl && (
         <Link
-          href={`/recipes/${recipe.id}`}
+          href={`/recipes/${recipe.id}${
+            showPrepTracker ? "" : "?showPrepTracker=false"
+          }`}
           className="relative w-full aspect-[4/3] mb-3 overflow-hidden rounded-md"
         >
           <Image
@@ -39,7 +43,12 @@ export default function RecipeCard({
         </Link>
       )}
 
-      <Link href={`/recipes/${recipe.id}`} className="flex-1">
+      <Link
+        href={`/recipes/${recipe.id}${
+          showPrepTracker ? "" : "?showPrepTracker=false"
+        }`}
+        className="flex-1"
+      >
         <div className="space-y-1">
           <h2 className="text-lg font-semibold">{recipe.title}</h2>
           <p className="text-sm text-gray-600">

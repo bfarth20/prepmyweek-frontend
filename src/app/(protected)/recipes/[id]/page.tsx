@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default async function RecipeDetailPage({ params }: Props) {
-  const resolvedParams = await params; // await the Promise to get actual params
+  const resolvedParams = await params;
   const recipeId = resolvedParams.id;
 
   const res = await fetch(`${API_BASE_URL}/recipes/${recipeId}`, {
