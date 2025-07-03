@@ -42,7 +42,7 @@ export default function StoreRecipeClientPage({
   // Pagination state
   const [recipes, setRecipes] = useState<RecipeSummary[]>([]);
   const [page, setPage] = useState(1);
-  const [limit] = useState(20);
+  const limit = 20;
   const [totalPages, setTotalPages] = useState(1);
   const [loadingRecipes, setLoadingRecipes] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -67,9 +67,7 @@ export default function StoreRecipeClientPage({
       setLoadingRecipes(true);
       setError(null);
       try {
-        const res = await fetch(
-          `${API_BASE_URL}/stores/${storeId}/recipes?page=${page}&limit=${limit}`
-        );
+        const res = await fetch(`${API_BASE_URL}/stores/${storeId}/recipes`);
         if (!res.ok) {
           throw new Error("Failed to fetch recipes");
         }
@@ -89,8 +87,6 @@ export default function StoreRecipeClientPage({
 
     fetchRecipes();
   }, [storeId, page, limit, user]);
-
-  if (loading || !user) return null;
 
   const handleAddToPrep = (recipe: RecipeSummary) => {
     const isSelected = selectedRecipeIds.includes(recipe.id);
@@ -136,6 +132,16 @@ export default function StoreRecipeClientPage({
     }
     return 0;
   });
+
+  const startIndex = (page - 1) * limit;
+  const paginatedRecipes = sortedRecipes.slice(startIndex, startIndex + limit);
+
+  // Update totalPages to match filtered count
+  useEffect(() => {
+    setTotalPages(Math.ceil(filteredRecipes.length / limit));
+  }, [filteredRecipes, limit]);
+
+  if (loading || !user) return null;
 
   return (
     <main className="px-2 sm:px-4 md:px-6 py-6 max-w-7xl mx-auto relative">
@@ -186,7 +192,7 @@ export default function StoreRecipeClientPage({
             </select>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
-            {sortedRecipes.map((recipe) => (
+            {paginatedRecipes.map((recipe) => (
               <RecipeCard
                 key={recipe.id}
                 recipe={recipe}
