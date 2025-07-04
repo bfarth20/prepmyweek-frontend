@@ -53,6 +53,7 @@ export interface RecipeIngredient {
   storeSection: string;
   isOptional: boolean;
   preparation?: string | null;
+  isNew?: boolean;
 }
 
 export interface RecipeSummary {

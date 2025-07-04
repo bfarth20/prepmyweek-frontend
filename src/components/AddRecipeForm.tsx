@@ -76,8 +76,15 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
     field: keyof IngredientInput,
     value: string | number | boolean
   ) => {
+    const normalizedValue =
+      field === "unit" && typeof value === "string"
+        ? value.toLowerCase()
+        : value;
+
     setIngredients((prev) =>
-      prev.map((ing) => (ing.id === id ? { ...ing, [field]: value } : ing))
+      prev.map((ing) =>
+        ing.id === id ? { ...ing, [field]: normalizedValue } : ing
+      )
     );
   };
 
@@ -386,6 +393,7 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
             <option value="/Images/Recipes/Sandwich.png">Sandwich</option>
             <option value="/Images/Recipes/Seafood.png">Seafood</option>
             <option value="/Images/Recipes/Soup.png">Soup</option>
+            <option value="/Images/Recipes/StirFry.png">Stirfry</option>
             <option value="/Images/Recipes/Burger.png">Burger</option>
             <option value="/Images/Recipes/Dessert.png">Dessert</option>
             <option value="/Images/Recipes/RiceBowl.png">Rice Bowl</option>

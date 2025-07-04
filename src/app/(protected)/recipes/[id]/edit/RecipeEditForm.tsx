@@ -65,11 +65,16 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
     field: K,
     value: RecipeDetail["ingredients"][0][K]
   ) => {
+    const normalizedValue =
+      field === "unit" && typeof value === "string"
+        ? (value.toLowerCase() as RecipeDetail["ingredients"][0][K])
+        : value;
+
     setFormData((prev) => ({
       ...prev,
       ingredients: prev.ingredients.map((ing) =>
         ing.recipeIngredientId === recipeIngredientId
-          ? { ...ing, [field]: value }
+          ? { ...ing, [field]: normalizedValue }
           : ing
       ),
     }));
@@ -91,6 +96,7 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
           isOptional: false,
           preparation: "",
           recipeIngredientId: newId,
+          isNew: true,
         },
       ],
     }));
@@ -101,6 +107,20 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
       "Are you sure you want to remove this ingredient?"
     );
     if (!confirmed) return;
+
+    const ingredientToRemove = formData.ingredients.find(
+      (ing) => ing.recipeIngredientId === recipeIngredientId
+    );
+
+    if (ingredientToRemove?.isNew) {
+      setFormData((prev) => ({
+        ...prev,
+        ingredients: prev.ingredients.filter(
+          (ing) => ing.recipeIngredientId !== recipeIngredientId
+        ),
+      }));
+      return;
+    }
 
     try {
       const token = localStorage.getItem("token"); // Get token here
@@ -122,7 +142,6 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
       const data = await res.json();
 
       if (!res.ok) {
-        // Don't call res.json() again here; use the already parsed 'data'
         const errorMessages = Array.isArray(data.error)
           ? data.error.map((err: ZodIssue) => err.message).join(", ")
           : data.error || "Failed to delete ingredient";
@@ -326,15 +345,19 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
           >
             <option value="">Select an image...</option>
             <option value="/Images/Recipes/Bbq.png">Bbq</option>
+            <option value="/Images/Recipes/Breakfast.png">Breakfast</option>
             <option value="/Images/Recipes/Casserole.png">Casserole</option>
             <option value="/Images/Recipes/Chicken.png">Chicken</option>
             <option value="/Images/Recipes/Fish.png">Fish</option>
+            <option value="/Images/Recipes/Mexican.png">Mexican</option>
             <option value="/Images/Recipes/Pasta.png">Pasta</option>
             <option value="/Images/Recipes/Pie.png">Pie</option>
+            <option value="/Images/Recipes/Pizza.png">Pizza</option>
             <option value="/Images/Recipes/Pork.png">Pork</option>
             <option value="/Images/Recipes/Salad.png">Salad Bowl</option>
             <option value="/Images/Recipes/Sandwich.png">Sandwich</option>
             <option value="/Images/Recipes/Seafood.png">Seafood</option>
+            <option value="/Images/Recipes/Soup.png">Soup</option>
             <option value="/Images/Recipes/StirFry.png">Stirfry</option>
             <option value="/Images/Recipes/Burger.png">Burger</option>
             <option value="/Images/Recipes/Dessert.png">Dessert</option>

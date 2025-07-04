@@ -16,6 +16,20 @@ export default function RecipeCard({
   isSelected?: boolean;
   showPrepTracker?: boolean;
 }) {
+  function formatTime(minutes: number): string {
+    if (minutes < 60) return `${minutes} min`;
+    const hrs = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (mins === 0) return `${hrs} hr${hrs > 1 ? "s" : ""}`;
+    return `${hrs} hr${hrs > 1 ? "s" : ""} ${mins} min`;
+  }
+  function formatCourse(course: string): string {
+    if (course === "DINNER") return "Dinner";
+    if (course === "LUNCH") return "Lunch";
+    if (course === "SNACK_SIDE") return "Snack or Side";
+    if (course === "BREAKFAST") return "Breakfast";
+    return course;
+  }
   return (
     <div
       className={`border-4 rounded-lg px-2 py-3 shadow-lg flex flex-col h-full transition-transform duration-100 bg-white ${
@@ -52,10 +66,11 @@ export default function RecipeCard({
         <div className="space-y-1">
           <h2 className="text-lg font-semibold">{recipe.title}</h2>
           <p className="text-sm text-gray-600">
-            Course: {recipe.course ?? "??"}
+            Course: {formatCourse(recipe.course) ?? "??"}
           </p>
           <p className="text-sm text-gray-600">
-            Total Time: {recipe.totalTime ?? "??"} min
+            Total Time:{" "}
+            {recipe.totalTime != null ? formatTime(recipe.totalTime) : "??"}
           </p>
           <p className="text-sm text-gray-600">
             Servings: {recipe.servings ?? "??"}
