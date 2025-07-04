@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import API_BASE_URL from "@/lib/config";
-import { RecipeDetail } from "@/lib/types"; // adjust path as needed
+import { RecipeDetail } from "@/lib/types";
 
-// Extend RecipeDetail with a local ingredientCount field for UI
 interface RecipeWithCount extends RecipeDetail {
   ingredientCount: number;
 }
@@ -62,6 +61,9 @@ export default function AdminAllRecipesPage() {
       <h1 className="text-3xl font-bold text-brand font-brand mb-4">
         All Recipes
       </h1>
+      <p className="mb-2 text-gray-700">
+        Total Recipes: <span className="font-semibold">{recipes.length}</span>
+      </p>
       <div className="overflow-x-auto">
         <table className="min-w-full border bg-white border-gray-300">
           <thead className="bg-gray-100">
