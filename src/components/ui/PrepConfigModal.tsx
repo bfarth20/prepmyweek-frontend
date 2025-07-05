@@ -21,8 +21,8 @@ export default function PrepConfigModal({
   const router = useRouter();
 
   const [numPeople, setNumPeople] = useState(1);
-  const [numLunches, setNumLunches] = useState(5);
-  const [numDinners, setNumDinners] = useState(5);
+  const [numLunches, setNumLunches] = useState(0);
+  const [numDinners, setNumDinners] = useState(0);
   const [useLeftovers, setUseLeftovers] = useState(false);
 
   const {
