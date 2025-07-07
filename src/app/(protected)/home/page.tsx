@@ -13,7 +13,7 @@ import { useState } from "react";
 import WalkthroughPopup from "@/components/ui/WalkThroughPopup";
 
 export default function HomePage() {
-  const { user, loading } = useAuth();
+  const { user, setUser, loading } = useAuth();
   const router = useRouter();
 
   const [walkthroughEnabled, setWalkthroughEnabled] = useState<boolean>(
@@ -37,7 +37,10 @@ export default function HomePage() {
           },
         }
       );
+
       setWalkthroughEnabled(value);
+
+      setUser((prev) => (prev ? { ...prev, walkthroughEnabled: value } : prev));
     } catch (error) {
       console.error("Failed to update walkthrough setting:", error);
     }

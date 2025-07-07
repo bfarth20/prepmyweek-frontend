@@ -23,6 +23,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
   token: string;
   loading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
@@ -140,7 +141,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, loading, login, logout, signup }}
+      value={{ user, setUser, token, loading, login, logout, signup }}
     >
       {children}
     </AuthContext.Provider>
