@@ -8,7 +8,7 @@ interface WalkthroughPopupProps {
 }
 
 const walkthroughMessages: Record<string, string> = {
-  home: 'Welcome! Start your meal prep by selecting "Start a FreshPrep" You can also add a recipe or go to your CurrentPrep',
+  home: 'Welcome! Start your meal prep by selecting "Start a FreshPrep" You can also add a recipe or go to your CurrentPrep. If you’re tired of seeing these popups and already know how the app works, toggle Walkthrough Mode off from the home page. You can turn it back on any time!',
   stores:
     "Start by choosing your preferred grocery store. Then set how many people you're shopping for, how many lunches and dinners you want to prep, and whether to use dinner leftovers for lunch. If you're not sure, feel free to leave the default settings as they are.",
   storesRecipes:
