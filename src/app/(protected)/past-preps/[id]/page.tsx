@@ -84,6 +84,33 @@ export default function PastPrepDetailPage() {
     }
   };
 
+  const handleSetAsCurrentPrep = async () => {
+    const confirmed = confirm(
+      "Are you sure you want to set this as your current prep? This will overwrite any existing current prep."
+    );
+    if (!confirmed) return;
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Not authenticated");
+
+      await axios.post(
+        `${API_BASE_URL}/past-preps/set-current`,
+        { pastPrepId: id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("This prep has been set as your current prep.");
+      router.push("/current-prep");
+    } catch (err) {
+      console.error("Set as current prep failed:", err);
+      alert("Failed to set current prep. Please try again.");
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
       <h1 className="text-3xl font-bold font-brand">
@@ -115,6 +142,10 @@ export default function PastPrepDetailPage() {
             disabled={deleteLoading}
           >
             {deleteLoading ? "Deleting..." : "Delete Past Prep"}
+          </Button>
+
+          <Button variant="whiteblock" onClick={handleSetAsCurrentPrep}>
+            Set as CurrentPrep
           </Button>
         </div>
       )}

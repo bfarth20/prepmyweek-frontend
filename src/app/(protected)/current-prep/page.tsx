@@ -9,6 +9,7 @@ import API_BASE_URL from "@/lib/config";
 import axios from "axios";
 import SaveToPastPrep from "@/components/SaveToPastPrep";
 import type { RecipeSummary } from "@/lib/types";
+import WalkthroughPopup from "@/components/ui/WalkThroughPopup";
 
 export default function CurrentPrepPage() {
   const [recipes, setRecipes] = useState<RecipeSummary[]>([]);
@@ -54,6 +55,7 @@ export default function CurrentPrepPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+      {user?.walkthroughEnabled && <WalkthroughPopup page="currentPrep" />}
       <h1 className="text-3xl font-bold font-brand">Your Current Prep</h1>
 
       {loadingPrep && <p>Loading...</p>}

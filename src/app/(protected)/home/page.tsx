@@ -6,10 +6,42 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { FeedbackButton } from "@/components/FeedbackButton";
 import { Button } from "@/components/ui/Button";
+import ToggleSwitch from "@/components/ui/ToggleSwitch";
+import axios from "axios";
+import API_BASE_URL from "@/lib/config";
+import { useState } from "react";
+import WalkthroughPopup from "@/components/ui/WalkThroughPopup";
 
 export default function HomePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+
+  const [walkthroughEnabled, setWalkthroughEnabled] = useState<boolean>(
+    user?.walkthroughEnabled ?? true
+  );
+
+  useEffect(() => {
+    if (user) {
+      setWalkthroughEnabled(user.walkthroughEnabled);
+    }
+  }, [user]);
+
+  const handleToggleWalkthrough = async (value: boolean) => {
+    try {
+      await axios.put(
+        `${API_BASE_URL}/users/walkthrough`,
+        { enabled: value },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setWalkthroughEnabled(value);
+    } catch (error) {
+      console.error("Failed to update walkthrough setting:", error);
+    }
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -24,9 +56,18 @@ export default function HomePage() {
       {user?.isAdmin && (
         <p className="mb-4 text-green-600 font-semibold">Welcome Admin</p>
       )}
+      {user?.walkthroughEnabled && <WalkthroughPopup page="home" />}
       <h1 className="text-3xl text-brand font-bold mb-4">
         Welcome, {user?.name || "Friend"}!
       </h1>
+
+      <div className="mb-4 flex justify-end items-center">
+        <ToggleSwitch
+          label="Walkthrough Mode"
+          checked={walkthroughEnabled}
+          onChange={handleToggleWalkthrough}
+        />
+      </div>
 
       <div className="grid gap-4">
         <Button variant="whiteblock" href="/profile">

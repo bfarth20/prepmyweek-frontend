@@ -9,6 +9,8 @@ import { PrepTracker } from "@/components/ui/PrepTracker";
 import { Toast } from "@/components/ui/Toast";
 import { RecipeDetail, Recipe } from "@/lib/types";
 import API_BASE_URL from "@/lib/config";
+import WalkthroughPopup from "@/components/ui/WalkThroughPopup";
+import { Button } from "@/components/ui/Button";
 
 export default function RecipeDetailClientPage({
   recipe,
@@ -97,8 +99,24 @@ export default function RecipeDetailClientPage({
       )}
 
       {showPrepTracker && <PrepTracker />}
+      {user?.walkthroughEnabled && <WalkthroughPopup page="recipeDetail" />}
 
       <div className="rounded-lg p-4 shadow-2xl bg-white flex flex-col justify-between">
+        <div className="flex justify-between items-center mb-4">
+          <Button
+            variant="ghost"
+            onClick={() => router.back()}
+            className="self-start"
+          >
+            ← Back to Recipes
+          </Button>
+
+          {!showPrepTracker && (
+            <Button variant="outline" onClick={() => window.print()}>
+              Print This Recipe
+            </Button>
+          )}
+        </div>
         <h1 className="text-3xl font-bold text-brand text-center">
           {recipe.title}
         </h1>

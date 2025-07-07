@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/context/AuthContext";
 import AddRecipeForm from "@/components/AddRecipeForm";
 import { Toast } from "@/components/ui/Toast";
+import WalkthroughPopup from "@/components/ui/WalkThroughPopup";
 
 export default function AddRecipePage() {
   const { user, loading } = useAuth();
@@ -37,6 +38,7 @@ export default function AddRecipePage() {
           onClose={() => setToastMessage(null)}
         />
       )}
+      {user?.walkthroughEnabled && <WalkthroughPopup page="addRecipe" />}
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-[0_0_20px_2px_rgba(0,0,0,0.3)] w-full max-w-4xl border border-orange-400 p-6">
           <h1 className="text-2xl text-center font-brand text-brand font-bold mb-4">

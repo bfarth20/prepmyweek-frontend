@@ -18,6 +18,7 @@ interface User {
   isAdmin: boolean;
   region: string;
   preferredStore: string;
+  walkthroughEnabled: boolean;
 }
 
 interface AuthContextType {

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Toast } from "@/components/ui/Toast";
 import API_BASE_URL from "@/lib/config";
 import axios from "axios";
+import WalkthroughPopup from "@/components/ui/WalkThroughPopup";
 
 export default function WeekSummaryPage() {
   const { selectedDinners, selectedLunches } = usePrep();
@@ -77,6 +78,7 @@ export default function WeekSummaryPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+      {user?.walkthroughEnabled && <WalkthroughPopup page="finishedPrep" />}
       {toastMessage && (
         <Toast
           message={toastMessage}
@@ -116,11 +118,11 @@ export default function WeekSummaryPage() {
       )}
 
       <div className="flex flex-col sm:flex-row justify-between gap-4 pt-8">
-        <Button variant="secondary" href="/home">
+        <Button variant="outline" href="/home">
           Back to Homepage
         </Button>
         <Button variant="default" onClick={handleSaveCurrentPrep}>
-          Save as Current Prep
+          Save as CurrentPrep
         </Button>
         <Button variant="default" href="/my-week/grocery-list">
           View Grocery List

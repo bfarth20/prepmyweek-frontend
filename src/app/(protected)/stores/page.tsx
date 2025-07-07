@@ -8,6 +8,7 @@ import axios from "axios";
 import API_BASE_URL from "@/lib/config";
 import PrepConfigModal from "@/components/ui/PrepConfigModal";
 import type { Store } from "@/lib/types";
+import WalkthroughPopup from "@/components/ui/WalkThroughPopup";
 
 type PrepConfig = {
   numPeople: number;
@@ -74,6 +75,7 @@ export default function StoresSelectionPage() {
 
   return (
     <div className="min-h-screen bg-background text-gray-900 p-6">
+      {user?.walkthroughEnabled && <WalkthroughPopup page="stores" />}
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold font-brand text-brand mb-2">
           StartMyPrep

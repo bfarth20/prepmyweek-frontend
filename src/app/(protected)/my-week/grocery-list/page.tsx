@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/context/AuthContext";
 import GroceryList from "@/components/GroceryList";
+import WalkthroughPopup from "@/components/ui/WalkThroughPopup";
 
 export default function GroceryListPage() {
   const { user, loading } = useAuth();
@@ -19,6 +20,7 @@ export default function GroceryListPage() {
 
   return (
     <div className="flex justify-center items-start min-h-screen py-8 px-0">
+      {user?.walkthroughEnabled && <WalkthroughPopup page="grocerylist" />}
       <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-xl mx-auto">
         <GroceryList />
       </div>
