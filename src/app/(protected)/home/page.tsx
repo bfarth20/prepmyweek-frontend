@@ -92,6 +92,10 @@ export default function HomePage() {
           View PastPreps
         </Button>
 
+        <Button variant="whiteblock" href="/my-favorites">
+          View MyFavorites
+        </Button>
+
         <Button variant="whiteblock" href="/add-recipe">
           Add a Recipe!
         </Button>

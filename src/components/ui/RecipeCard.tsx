@@ -4,16 +4,21 @@ import Link from "next/link";
 import Image from "next/image";
 import { RecipeSummary } from "@/lib/types";
 import { Button } from "@/components/ui/Button";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 export default function RecipeCard({
   recipe,
   onAddToPrep,
   isSelected = false,
+  isFavorited = false,
+  onToggleFavorite,
   showPrepTracker = true,
 }: {
   recipe: RecipeSummary;
   onAddToPrep?: (recipe: RecipeSummary) => void;
   isSelected?: boolean;
+  isFavorited?: boolean;
+  onToggleFavorite?: () => void;
   showPrepTracker?: boolean;
 }) {
   function formatTime(minutes: number): string {
@@ -53,6 +58,21 @@ export default function RecipeCard({
             <span className="absolute top-2 left-2 inline-block bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full uppercase tracking-wide z-10">
               Vegetarian
             </span>
+          )}
+          {onToggleFavorite && (
+            <button
+              onClick={(e) => {
+                e.preventDefault(); // Prevent link navigation
+                onToggleFavorite();
+              }}
+              className="absolute top-2 right-2 z-10"
+            >
+              {isFavorited ? (
+                <FaHeart className="text-red-500 text-xl drop-shadow" />
+              ) : (
+                <FaRegHeart className="text-gray-300 text-xl drop-shadow hover:text-red-400" />
+              )}
+            </button>
           )}
         </Link>
       )}

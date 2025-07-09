@@ -77,6 +77,12 @@ export default function Sidebar({
               >
                 Go to PastPreps
               </Link>
+              <Link
+                href="/my-favorites"
+                className="block text-gray-700 hover:text-brand font-medium"
+              >
+                Go to MyFavorites
+              </Link>
               {user?.isAdmin && (
                 <Link
                   href="/admin"

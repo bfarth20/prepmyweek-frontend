@@ -47,6 +47,7 @@ export default function StoreRecipeClientPage({
   const [totalPages, setTotalPages] = useState(1);
   const [loadingRecipes, setLoadingRecipes] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [favoriteIds, setFavoriteIds] = useState<number[]>([]);
 
   type SortOption = "newest" | "ingredients" | "cookTime";
 
@@ -88,6 +89,27 @@ export default function StoreRecipeClientPage({
 
     fetchRecipes();
   }, [storeId, page, limit, user]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    async function fetchFavorites() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/users/favorites`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        if (!res.ok) throw new Error("Failed to fetch favorites");
+        const data: RecipeSummary[] = await res.json();
+        setFavoriteIds(data.map((recipe) => recipe.id));
+      } catch (err) {
+        console.error("Error fetching favorites:", err);
+      }
+    }
+
+    fetchFavorites();
+  }, [user]);
 
   const handleAddToPrep = (recipe: RecipeSummary) => {
     const isSelected = selectedRecipeIds.includes(recipe.id);
@@ -199,8 +221,34 @@ export default function StoreRecipeClientPage({
                 <RecipeCard
                   key={recipe.id}
                   recipe={recipe}
-                  onAddToPrep={handleAddToPrep}
                   isSelected={selectedRecipeIds.includes(recipe.id)}
+                  isFavorited={favoriteIds.includes(recipe.id)}
+                  onAddToPrep={handleAddToPrep}
+                  onToggleFavorite={async () => {
+                    try {
+                      const method = favoriteIds.includes(recipe.id)
+                        ? "DELETE"
+                        : "POST";
+                      await fetch(
+                        `${API_BASE_URL}/users/favorites/${recipe.id}`,
+                        {
+                          method,
+                          headers: {
+                            Authorization: `Bearer ${localStorage.getItem(
+                              "token"
+                            )}`,
+                          },
+                        }
+                      );
+                      setFavoriteIds((prev) =>
+                        method === "POST"
+                          ? [...prev, recipe.id]
+                          : prev.filter((id) => id !== recipe.id)
+                      );
+                    } catch (err) {
+                      console.error("Failed to toggle favorite", err);
+                    }
+                  }}
                 />
               ))}
             </div>
