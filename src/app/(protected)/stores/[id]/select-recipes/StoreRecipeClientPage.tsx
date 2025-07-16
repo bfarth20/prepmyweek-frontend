@@ -56,6 +56,16 @@ export default function StoreRecipeClientPage({
   type FilterOption = "all" | "dinner" | "lunch" | "vegetarian";
   const [filter, setFilter] = useState<FilterOption>("all");
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm.trim());
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
+
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
@@ -74,6 +84,7 @@ export default function StoreRecipeClientPage({
           limit: limit.toString(),
           sort: sortOption,
           filter,
+          search: debouncedSearchTerm,
         });
 
         const res = await fetch(
@@ -97,7 +108,7 @@ export default function StoreRecipeClientPage({
     }
 
     fetchRecipes();
-  }, [storeId, page, limit, user, filter, sortOption]);
+  }, [storeId, page, limit, user, filter, sortOption, debouncedSearchTerm]);
 
   useEffect(() => {
     if (!user) return;
@@ -152,6 +163,17 @@ export default function StoreRecipeClientPage({
         <h1 className="text-2xl text-brand font-brand font-bold mb-6">
           Recipes from This Store
         </h1>
+
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setPage(1); // reset to page 1 on new search
+          }}
+          placeholder="Search recipes by name or instructions..."
+          className="w-full p-2 mb-6 border border-gray-300 bg-white rounded shadow-sm"
+        />
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
