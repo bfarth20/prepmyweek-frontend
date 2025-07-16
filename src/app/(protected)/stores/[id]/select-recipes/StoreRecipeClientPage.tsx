@@ -69,7 +69,16 @@ export default function StoreRecipeClientPage({
       setLoadingRecipes(true);
       setError(null);
       try {
-        const res = await fetch(`${API_BASE_URL}/stores/${storeId}/recipes`);
+        const queryParams = new URLSearchParams({
+          page: page.toString(),
+          limit: limit.toString(),
+          sort: sortOption,
+          filter,
+        });
+
+        const res = await fetch(
+          `${API_BASE_URL}/stores/${storeId}/recipes?${queryParams}`
+        );
         if (!res.ok) {
           throw new Error("Failed to fetch recipes");
         }
@@ -88,7 +97,7 @@ export default function StoreRecipeClientPage({
     }
 
     fetchRecipes();
-  }, [storeId, page, limit, user]);
+  }, [storeId, page, limit, user, filter, sortOption]);
 
   useEffect(() => {
     if (!user) return;
@@ -131,38 +140,6 @@ export default function StoreRecipeClientPage({
 
   const handlePrevPage = () => setPage((p) => Math.max(p - 1, 1));
   const handleNextPage = () => setPage((p) => Math.min(p + 1, totalPages));
-
-  const filteredRecipes = recipes.filter((recipe) => {
-    if (filter === "all") return true;
-    if (filter === "vegetarian") return recipe.isVegetarian;
-    if (filter === "dinner") return recipe.course === "DINNER";
-    if (filter === "lunch") return recipe.course === "LUNCH";
-    return true;
-  });
-
-  const sortedRecipes = filteredRecipes.sort((a, b) => {
-    if (sortOption === "newest") {
-      const toDate = (dateStr?: string) =>
-        dateStr ? new Date(dateStr.replace(" ", "T")) : new Date(0);
-
-      return toDate(b.createdAt).getTime() - toDate(a.createdAt).getTime();
-    }
-    if (sortOption === "ingredients") {
-      return (a.ingredientCount ?? 0) - (b.ingredientCount ?? 0);
-    }
-    if (sortOption === "cookTime") {
-      return (a.totalTime ?? 0) - (b.totalTime ?? 0);
-    }
-    return 0;
-  });
-
-  const startIndex = (page - 1) * limit;
-  const paginatedRecipes = sortedRecipes.slice(startIndex, startIndex + limit);
-
-  // Update totalPages to match filtered count
-  useEffect(() => {
-    setTotalPages(Math.ceil(filteredRecipes.length / limit));
-  }, [filteredRecipes, limit]);
 
   if (loading || !user) return null;
 
@@ -217,7 +194,7 @@ export default function StoreRecipeClientPage({
               </select>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
-              {paginatedRecipes.map((recipe) => (
+              {recipes.map((recipe) => (
                 <RecipeCard
                   key={recipe.id}
                   recipe={recipe}

@@ -88,7 +88,7 @@ export default function MyFavoritesPage() {
   return (
     <main className="px-4 py-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-brand font-bold text-brand mb-6">
-        My Favorite Recipes
+        MyFavorites
       </h1>
 
       {loadingFavorites ? (
