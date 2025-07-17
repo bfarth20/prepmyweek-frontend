@@ -197,6 +197,8 @@ export default function StoreRecipeClientPage({
                 <option value="all">No Filter</option>
                 <option value="dinner">Dinner</option>
                 <option value="lunch">Lunch</option>
+                <option value="breakfast">Breakfast</option>
+                <option value="snack">Snack or Side</option>
                 <option value="vegetarian">Vegetarian</option>
               </select>
 
