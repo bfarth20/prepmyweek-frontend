@@ -4,10 +4,10 @@ export default function PrivacyPolicyPage() {
       <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
 
       <p className="mb-4">
-        PrepMyWeek ("we", "our", or "us") is committed to protecting your
-        privacy. This Privacy Policy explains how your information is collected,
-        used, and shared when you use our website and mobile app (collectively,
-        the "Service").
+        PrepMyWeek (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is
+        committed to protecting your privacy. This Privacy Policy explains how
+        your information is collected, used, and shared when you use our website
+        and mobile app (collectively, the &quot;Service&quot;).
       </p>
 
       <h2 className="text-2xl font-semibold mt-8 mb-2">
@@ -52,7 +52,7 @@ export default function PrivacyPolicyPage() {
       </p>
 
       <h2 className="text-2xl font-semibold mt-8 mb-2">
-        6. Children's Privacy
+        6. Children&rsquo;s Privacy
       </h2>
       <p className="mb-4">
         Our service is not intended for children under the age of 13. We do not
