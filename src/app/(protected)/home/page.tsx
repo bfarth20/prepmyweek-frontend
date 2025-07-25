@@ -11,6 +11,7 @@ import axios from "axios";
 import API_BASE_URL from "@/lib/config";
 import { useState } from "react";
 import WalkthroughPopup from "@/components/ui/WalkThroughPopup";
+import PreferredStoreModal from "@/components/PreferredStoreModal";
 
 export default function HomePage() {
   const { user, setUser, loading } = useAuth();
@@ -58,6 +59,12 @@ export default function HomePage() {
     <div className="p-6 max-w-3xl mx-auto">
       {user?.isAdmin && (
         <p className="mb-4 text-green-600 font-semibold">Welcome Admin</p>
+      )}
+      {!user.preferredStore && (
+        <PreferredStoreModal
+          user={user}
+          token={localStorage.getItem("token") || ""}
+        />
       )}
       {user?.walkthroughEnabled && <WalkthroughPopup page="home" />}
       <h1 className="text-3xl text-brand font-bold mb-4">
