@@ -7,6 +7,7 @@ import { Button } from "./ui/Button";
 import API_BASE_URL from "@/lib/config";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/context/AuthContext";
+import { ALLOWED_UNITS } from "../lib/constants";
 
 interface IngredientInput {
   id: string;
@@ -437,13 +438,21 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
               </div>
 
               <div className="grid grid-cols-2 gap-2">
-                <Input
-                  placeholder="Unit (e.g., tsp, cups)"
+                <select
+                  className="border rounded px-2 py-1"
                   value={ing.unit}
                   onChange={(e) =>
                     handleIngredientChange(ing.id, "unit", e.target.value)
                   }
-                />
+                  required
+                >
+                  <option value="">Select a unit</option>
+                  {ALLOWED_UNITS.map((unit) => (
+                    <option key={unit} value={unit}>
+                      {unit.charAt(0).toUpperCase() + unit.slice(1)}
+                    </option>
+                  ))}
+                </select>
                 <select
                   value={ing.storeSection}
                   onChange={(e) =>
