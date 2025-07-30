@@ -164,7 +164,9 @@ export default function RecipeDetailClientPage({
         <ul className="list-disc list-inside mb-6 space-y-1">
           {recipe.ingredients.map((ingredient) => (
             <li key={ingredient.id}>
-              {ingredient.quantity ?? "?"} {ingredient.unit ?? ""}{" "}
+              {ingredient.formattedQuantity
+                ? ingredient.formattedQuantity
+                : `${ingredient.quantity} ${ingredient.unit}`}{" "}
               {ingredient.name}
               {ingredient.preparation && `, ${ingredient.preparation}`}
               {ingredient.isOptional && " (optional)"}

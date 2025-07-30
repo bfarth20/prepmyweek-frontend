@@ -2,30 +2,33 @@
 
 import { useEffect, useState } from "react";
 import { usePrep } from "@/components/context/PrepContext";
-import {
-  getGroupedIngredients,
-  formatSectionName,
-} from "@/lib/getGroupedIngredients";
 import { Button } from "@/components/ui/Button";
 import { useRouter, useSearchParams } from "next/navigation";
 import API_BASE_URL from "@/lib/config";
-import type { NormalizedRecipe } from "@/lib/types";
+import { Ingredient, RecipeSummary } from "@/lib/types";
 
 export default function GroceryList() {
-  const { selectedDinners, selectedLunches, clearPrep } = usePrep();
+  const { selectedRecipes, clearPrep } = usePrep();
   const searchParams = useSearchParams();
   const source = searchParams.get("source");
 
   const router = useRouter();
-  const [recipes, setRecipes] = useState<NormalizedRecipe[]>([]);
+
+  // groupedIngredients will be a Map<string, Ingredient[]>
+  // Assuming backend returns data in a format compatible with this
+  const [groupedIngredients, setGroupedIngredients] = useState<
+    Map<string, Ingredient[]>
+  >(new Map());
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
   // --- Custom grocery items (for current prep only) ---
   const [customItems, setCustomItems] = useState<string[]>([]);
   const [newItem, setNewItem] = useState("");
+  const params = new URLSearchParams(window.location.search);
+  const pastId = params.get("id");
 
-  // Load from localStorage
+  // Load custom items from localStorage if source === "current"
   useEffect(() => {
     if (source === "current") {
       const saved = localStorage.getItem("customGroceryItems");
@@ -53,68 +56,82 @@ export default function GroceryList() {
     saveCustomItems(updated);
   };
 
-  // --- Recipe loading ---
+  // Fetch grocery list grouped ingredients from backend
   useEffect(() => {
-    const loadRecipes = async () => {
+    const params = new URLSearchParams(window.location.search);
+    const pastId = params.get("id");
+    const fetchRecipeIds = async () => {
       const token = localStorage.getItem("token");
-      const params = new URLSearchParams(window.location.search);
-      const pastId = params.get("id");
-
       if (!token) {
-        setError("You must be logged in to view your grocery list.");
-        setLoading(false);
+        setError("You must be logged in.");
         return;
       }
 
       try {
+        setLoading(true);
+        let recipeIds: number[] = [];
+
         if (source === "current") {
           const res = await fetch(`${API_BASE_URL}/current-prep`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           });
 
           if (!res.ok) {
-            const { error } = await res.json();
-            setError(error || "Failed to load current prep.");
-            setLoading(false);
-            return;
+            const data = await res.json();
+            throw new Error(data.error || "Failed to fetch current prep.");
           }
 
           const data = await res.json();
-          setRecipes(data.data.recipes);
+          recipeIds = (data.data.recipes as RecipeSummary[]).map((r) => r.id);
         } else if (source === "past" && pastId) {
           const res = await fetch(`${API_BASE_URL}/past-preps/${pastId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           });
 
           if (!res.ok) {
-            const { error } = await res.json();
-            setError(error || "Failed to load past prep.");
-            setLoading(false);
-            return;
+            const data = await res.json();
+            throw new Error(data.error || "Failed to fetch past prep.");
           }
 
           const data = await res.json();
-          setRecipes(data.data.recipes);
+          recipeIds = (data.data.recipes as RecipeSummary[]).map((r) => r.id);
         } else {
-          // fallback for manual mode
-          setRecipes([...selectedDinners, ...selectedLunches]);
+          // Use selectedRecipes passed as prop
+          recipeIds = selectedRecipes.map((r) => r.id);
         }
+        console.log("recipeIds before grocery list fetch:", recipeIds);
+
+        const groceryRes = await fetch(`${API_BASE_URL}/grocery-list`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ recipeIds }),
+        });
+
+        if (!groceryRes.ok) {
+          const data = await groceryRes.json();
+          throw new Error(data.error || "Failed to fetch grocery list.");
+        }
+
+        const { groceryList } = await groceryRes.json();
+        setGroupedIngredients(new Map(Object.entries(groceryList)));
       } catch (err) {
-        console.error("Failed to fetch recipes:", err);
-        setError("An error occurred while loading recipes.");
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError(
+            "An unexpected error occurred while loading the grocery list."
+          );
+        }
       } finally {
         setLoading(false);
       }
     };
 
-    loadRecipes();
-  }, [source, selectedDinners, selectedLunches]);
-
-  const grouped = getGroupedIngredients(recipes);
+    fetchRecipeIds();
+  }, [selectedRecipes, source, pastId]);
 
   if (loading) {
     return <p className="text-center mt-10">Loading...</p>;
@@ -124,7 +141,7 @@ export default function GroceryList() {
     return <p className="text-center text-red-500 mt-10">{error}</p>;
   }
 
-  if (recipes.length === 0) {
+  if (groupedIngredients.size === 0) {
     return (
       <div className="max-w-2xl mx-auto text-center mt-10">
         <p className="text-gray-600 mb-4">No recipes selected yet.</p>
@@ -156,13 +173,14 @@ export default function GroceryList() {
         </div>
       </div>
 
-      {Array.from(grouped.entries()).map(([storeSection, items]) => (
+      {Array.from(groupedIngredients.entries()).map(([storeSection, items]) => (
         <div key={storeSection} className="mb-4">
           <h2 className="font-semibold text-brand text-lg mb-2">
-            {formatSectionName(storeSection)}
+            {storeSection}
           </h2>
           <div className="ml-5 space-y-1">
-            {Array.from(items.values()).map((ingredient) => {
+            {items.map((ingredient: Ingredient) => {
+              console.log("ingredient:", ingredient);
               const id = `chk-${ingredient.name}-${ingredient.unit}`
                 .replace(/\s+/g, "-")
                 .toLowerCase();
@@ -176,7 +194,9 @@ export default function GroceryList() {
                     className="mr-2"
                   />
                   <label htmlFor={id}>
-                    {`${ingredient.quantity} ${ingredient.unit} ${ingredient.name}`}
+                    {`${ingredient.quantity} ${ingredient.unit ?? ""} ${
+                      ingredient.name
+                    }`}
                   </label>
                 </div>
               );

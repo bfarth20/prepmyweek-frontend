@@ -8,6 +8,7 @@ import API_BASE_URL from "@/lib/config";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/context/AuthContext";
 import { ALLOWED_UNITS } from "../lib/constants";
+import IngredientInput from "./IngredientInput";
 
 interface IngredientInput {
   id: string;
@@ -415,11 +416,10 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
               className="border border-orange-500 rounded-lg p-4 space-y-2"
             >
               <div className="grid grid-cols-2 gap-2">
-                <Input
-                  placeholder="Ingredient name"
+                <IngredientInput
                   value={ing.name}
-                  onChange={(e) =>
-                    handleIngredientChange(ing.id, "name", e.target.value)
+                  onChange={(newValue: string) =>
+                    handleIngredientChange(ing.id, "name", newValue)
                   }
                 />
                 <Input
@@ -439,7 +439,7 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
 
               <div className="grid grid-cols-2 gap-2">
                 <select
-                  className="border rounded px-2 py-1"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent"
                   value={ing.unit}
                   onChange={(e) =>
                     handleIngredientChange(ing.id, "unit", e.target.value)

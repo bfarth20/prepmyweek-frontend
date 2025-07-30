@@ -11,10 +11,13 @@ import {
 type PrepContextType = {
   selectedDinners: NormalizedRecipe[];
   selectedLunches: NormalizedRecipe[];
+  selectedRecipes: Recipe[];
   addDinner: (recipe: Recipe) => void;
   addLunch: (recipe: Recipe) => void;
+  addRecipe: (recipe: Recipe) => void;
   removeDinner: (id: number) => void;
   removeLunch: (id: number) => void;
+  removeRecipe: (id: number) => void;
   clearPrep: () => void;
   numberOfPeople: number;
   numberOfDinners: number;
@@ -36,7 +39,6 @@ export function usePrep() {
   return context;
 }
 
-// Helper to normalize ingredients from SimpleIngredient[] to NormalizedIngredient[]
 const normalizeIngredients = (
   ingredients: SimpleIngredient[] = []
 ): NormalizedIngredient[] => {
@@ -58,11 +60,12 @@ export function PrepProvider({ children }: { children: ReactNode }) {
   const [selectedLunches, setSelectedLunches] = useState<NormalizedRecipe[]>(
     []
   );
+  const [selectedRecipes, setSelectedRecipes] = useState<Recipe[]>([]);
 
-  const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
-  const [numberOfDinners, setNumberOfDinners] = useState<number>(0);
-  const [numberOfLunches, setNumberOfLunches] = useState<number>(0);
-  const [useLeftovers, setUseLeftovers] = useState<boolean>(false);
+  const [numberOfPeople, setNumberOfPeople] = useState(1);
+  const [numberOfDinners, setNumberOfDinners] = useState(0);
+  const [numberOfLunches, setNumberOfLunches] = useState(0);
+  const [useLeftovers, setUseLeftovers] = useState(false);
 
   const addDinner = (recipe: Recipe) => {
     const normalizedRecipe: NormalizedRecipe = {
@@ -92,6 +95,16 @@ export function PrepProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const addRecipe = (recipe: Recipe) => {
+    setSelectedRecipes((prev) =>
+      prev.find((r) => r.id === recipe.id) ? prev : [...prev, recipe]
+    );
+  };
+
+  const removeRecipe = (id: number) => {
+    setSelectedRecipes((prev) => prev.filter((r) => r.id !== id));
+  };
+
   const removeDinner = (id: number) => {
     setSelectedDinners((prev) => prev.filter((r) => r.id !== id));
   };
@@ -103,6 +116,7 @@ export function PrepProvider({ children }: { children: ReactNode }) {
   const clearPrep = () => {
     setSelectedDinners([]);
     setSelectedLunches([]);
+    setSelectedRecipes([]);
     setNumberOfPeople(1);
     setNumberOfDinners(0);
     setNumberOfLunches(0);
@@ -114,10 +128,13 @@ export function PrepProvider({ children }: { children: ReactNode }) {
       value={{
         selectedDinners,
         selectedLunches,
+        selectedRecipes,
         addDinner,
         addLunch,
+        addRecipe,
         removeDinner,
         removeLunch,
+        removeRecipe,
         clearPrep,
         numberOfPeople,
         numberOfDinners,

@@ -28,17 +28,15 @@ export default function StoreRecipeClientPage({
   const { user, loading } = useAuth();
   const router = useRouter();
   const {
-    selectedDinners,
-    selectedLunches,
+    selectedRecipes,
     addDinner,
     removeDinner,
     addLunch,
     removeLunch,
+    addRecipe,
+    removeRecipe,
   } = usePrep();
-  const selectedRecipeIds = [
-    ...selectedDinners.map((r) => r.id),
-    ...selectedLunches.map((r) => r.id),
-  ];
+  const selectedIds = selectedRecipes.map((r) => r.id);
 
   // Pagination state
   const [recipes, setRecipes] = useState<RecipeSummary[]>([]);
@@ -131,16 +129,24 @@ export default function StoreRecipeClientPage({
     fetchFavorites();
   }, [user]);
 
-  const handleAddToPrep = (recipe: RecipeSummary) => {
-    const isSelected = selectedRecipeIds.includes(recipe.id);
+  const handleAddOrRemove = (recipe: RecipeSummary) => {
+    const isSelected = selectedRecipes.some((r) => r.id === recipe.id);
 
+    // Always update the general selectedRecipes list
+    if (isSelected) {
+      removeRecipe(recipe.id);
+    } else {
+      addRecipe(recipe);
+    }
+
+    // Update PrepTracker state only for Lunch and Dinner courses
     if (recipe.course === "LUNCH") {
       if (isSelected) {
         removeLunch(recipe.id);
       } else {
         addLunch(recipe);
       }
-    } else {
+    } else if (recipe.course === "DINNER") {
       if (isSelected) {
         removeDinner(recipe.id);
       } else {
@@ -222,9 +228,9 @@ export default function StoreRecipeClientPage({
                 <RecipeCard
                   key={recipe.id}
                   recipe={recipe}
-                  isSelected={selectedRecipeIds.includes(recipe.id)}
+                  isSelected={selectedIds.includes(recipe.id)}
                   isFavorited={favoriteIds.includes(recipe.id)}
-                  onAddToPrep={handleAddToPrep}
+                  onAddToPrep={handleAddOrRemove}
                   onToggleFavorite={async () => {
                     try {
                       const method = favoriteIds.includes(recipe.id)

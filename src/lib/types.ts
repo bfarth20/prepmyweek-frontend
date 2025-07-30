@@ -54,6 +54,7 @@ export interface RecipeIngredient {
   isOptional: boolean;
   preparation?: string | null;
   isNew?: boolean;
+  formattedQuantity?: string;
 }
 
 export interface RecipeSummary {

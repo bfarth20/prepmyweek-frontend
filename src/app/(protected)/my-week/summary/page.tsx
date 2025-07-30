@@ -12,7 +12,7 @@ import axios from "axios";
 import WalkthroughPopup from "@/components/ui/WalkThroughPopup";
 
 export default function WeekSummaryPage() {
-  const { selectedDinners, selectedLunches } = usePrep();
+  const { selectedRecipes } = usePrep();
   const { user, loading, token } = useAuth();
   const router = useRouter();
 
@@ -41,14 +41,12 @@ export default function WeekSummaryPage() {
     );
     if (!confirmed) return;
 
-    const recipeIds = [...selectedDinners, ...selectedLunches].map((recipe) =>
-      recipe.id.toString()
-    );
-
     if (!token) {
       showToast("You must be logged in to save your prep.", "error");
       return;
     }
+
+    const recipeIds = selectedRecipes.map((recipe) => recipe.id.toString());
 
     try {
       await axios.post(
@@ -91,27 +89,18 @@ export default function WeekSummaryPage() {
         Your Week Summary
       </h1>
 
-      {selectedDinners.length > 0 && (
-        <div>
-          <h2 className="text-2xl font-semibold text-brand font-bold font-brand mb-2">
-            Dinner Recipes
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {selectedDinners.map((recipe) => (
-              <RecipeCard key={`dinner-${recipe.id}`} recipe={recipe} />
-            ))}
-          </div>
-        </div>
+      {selectedRecipes.length === 0 && (
+        <p className="text-center text-gray-600 mt-6">No recipes selected.</p>
       )}
 
-      {selectedLunches.length > 0 && (
+      {selectedRecipes.length > 0 && (
         <div>
-          <h2 className="text-2xl text-brand font-semibold mt-6 mb-2">
-            Lunch Recipes
+          <h2 className="text-2xl font-semibold text-brand mb-4">
+            Selected Recipes
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {selectedLunches.map((recipe) => (
-              <RecipeCard key={`lunch-${recipe.id}`} recipe={recipe} />
+            {selectedRecipes.map((recipe) => (
+              <RecipeCard key={recipe.id} recipe={recipe} />
             ))}
           </div>
         </div>
