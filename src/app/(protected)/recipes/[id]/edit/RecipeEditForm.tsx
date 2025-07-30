@@ -7,6 +7,8 @@ import type { RecipeDetail, Store } from "@/lib/types";
 import API_BASE_URL from "@/lib/config";
 import { useAuth } from "@/components/context/AuthContext";
 import { Toast } from "@/components/ui/Toast";
+import { ALLOWED_UNITS } from "@/lib/constants";
+import IngredientInput from "@/components/IngredientInput";
 import type { ZodIssue } from "zod";
 
 type Props = {
@@ -407,18 +409,15 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
             className="border border-orange-500 rounded-lg p-4 space-y-2"
           >
             <div className="grid grid-cols-2 gap-2">
-              <input
-                type="text"
+              <IngredientInput
                 value={ing.name}
-                onChange={(e) =>
+                onChange={(newValue: string) =>
                   handleIngredientChange(
                     ing.recipeIngredientId,
                     "name",
-                    e.target.value
+                    newValue
                   )
                 }
-                className="border rounded px-2 py-1"
-                placeholder="Name"
               />
               <input
                 type="number"
@@ -434,8 +433,7 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
                 className="border rounded px-2 py-1"
                 placeholder="Amount"
               />
-              <input
-                type="text"
+              <select
                 value={ing.unit ?? ""}
                 onChange={(e) =>
                   handleIngredientChange(
@@ -445,8 +443,15 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
                   )
                 }
                 className="border rounded px-2 py-1"
-                placeholder="Unit"
-              />
+                required
+              >
+                <option value="">Select a unit</option>
+                {ALLOWED_UNITS.map((unit) => (
+                  <option key={unit} value={unit}>
+                    {unit.charAt(0).toUpperCase() + unit.slice(1)}
+                  </option>
+                ))}
+              </select>
               <select
                 value={ing.storeSection ?? ""}
                 onChange={(e) =>
