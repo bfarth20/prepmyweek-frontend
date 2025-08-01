@@ -1,3 +1,5 @@
+// I believe this is just a dead page, it is not imported anywhere
+
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import API_BASE_URL from "@/lib/config";

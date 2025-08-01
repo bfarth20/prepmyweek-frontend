@@ -1,27 +1,11 @@
 import RecipeDetailClientPage from "./RecipeDetailClientPage";
-import { notFound } from "next/navigation";
-import API_BASE_URL from "@/lib/config";
-import type { RecipeDetail } from "@/lib/types";
 
-type Props = {
-  params: Promise<{ id: string }>;
+type PageProps = {
+  params: Promise<{ id: string }>; // Mark params as Promise type if needed
 };
 
-export default async function RecipeDetailPage({ params }: Props) {
-  const resolvedParams = await params;
-  const recipeId = resolvedParams.id;
+export default async function Page({ params }: PageProps) {
+  const { id } = await params;
 
-  const res = await fetch(`${API_BASE_URL}/recipes/${recipeId}`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    notFound();
-  }
-
-  const json = await res.json();
-  const recipe: RecipeDetail = json.data;
-  console.log("Fetched recipe data:", recipe);
-
-  return <RecipeDetailClientPage recipe={recipe} />;
+  return <RecipeDetailClientPage recipeId={id} />;
 }

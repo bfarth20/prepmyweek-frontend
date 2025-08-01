@@ -14,6 +14,6 @@ export const ALLOWED_UNITS = [
   "package",
   "slice",
   "bunch",
-  "filet",
+  "fillet",
   "pinch",
 ];

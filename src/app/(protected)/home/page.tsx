@@ -17,6 +17,16 @@ export default function HomePage() {
   const { user, setUser, loading } = useAuth();
   const router = useRouter();
 
+  const [preferMetric, setPreferMetric] = useState<boolean>(
+    user?.preferMetric ?? false
+  );
+
+  useEffect(() => {
+    if (user) {
+      setPreferMetric(user.preferMetric);
+    }
+  }, [user]);
+
   const [walkthroughEnabled, setWalkthroughEnabled] = useState<boolean>(
     user?.walkthroughEnabled ?? true
   );
@@ -26,6 +36,24 @@ export default function HomePage() {
       setWalkthroughEnabled(user.walkthroughEnabled);
     }
   }, [user]);
+
+  const handleToggleMetric = async (value: boolean) => {
+    try {
+      await axios.put(
+        `${API_BASE_URL}/users/preferMetric`,
+        { preferMetric: value },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setPreferMetric(value);
+      setUser((prev) => (prev ? { ...prev, preferMetric: value } : prev));
+    } catch (error) {
+      console.error("Failed to update metric preference:", error);
+    }
+  };
 
   const handleToggleWalkthrough = async (value: boolean) => {
     try {
@@ -71,7 +99,12 @@ export default function HomePage() {
         Welcome, {user?.name || "Friend"}!
       </h1>
 
-      <div className="mb-4 flex justify-end items-center">
+      <div className="mb-4 flex justify-between">
+        <ToggleSwitch
+          label="Use Metric Units"
+          checked={preferMetric}
+          onChange={handleToggleMetric}
+        />
         <ToggleSwitch
           label="Walkthrough Mode"
           checked={walkthroughEnabled}

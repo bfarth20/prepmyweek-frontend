@@ -5,6 +5,7 @@ export interface User {
   isAdmin: boolean;
   region: string;
   preferredStore: string;
+  preferMetric: boolean;
 }
 
 export interface Ingredient {

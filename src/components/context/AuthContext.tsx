@@ -19,6 +19,7 @@ interface User {
   region: string;
   preferredStore: string;
   walkthroughEnabled: boolean;
+  preferMetric: boolean;
 }
 
 interface AuthContextType {
@@ -60,6 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         headers: { Authorization: `Bearer ${savedToken}` },
       })
       .then((res) => {
+        console.log("User data from /users/me:", res.data);
         setUser(res.data);
       })
       .catch(() => {

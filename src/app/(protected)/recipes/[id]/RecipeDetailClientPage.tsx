@@ -12,18 +12,20 @@ import API_BASE_URL from "@/lib/config";
 import WalkthroughPopup from "@/components/ui/WalkThroughPopup";
 import { Button } from "@/components/ui/Button";
 
-export default function RecipeDetailClientPage({
-  recipe,
-}: {
-  recipe: RecipeDetail;
-}) {
+type Props = {
+  recipeId: string;
+};
+
+export default function RecipeDetailClientPage({ recipeId }: Props) {
   const { addDinner } = usePrep();
   const { user } = useAuth();
   const router = useRouter();
-
   const searchParams = useSearchParams();
   const showPrepTrackerParam = searchParams.get("showPrepTracker");
   const showPrepTracker = showPrepTrackerParam !== "false";
+
+  const [recipe, setRecipe] = useState<RecipeDetail | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"success" | "error">("success");
@@ -39,10 +41,34 @@ export default function RecipeDetailClientPage({
   useEffect(() => {
     if (!user) {
       router.push("/login");
+      return;
     }
-  }, [user, router]);
 
-  if (!user) return null;
+    async function fetchRecipe() {
+      try {
+        console.log("Fetching recipe with preferMetric:", user?.preferMetric);
+        const res = await fetch(
+          `${API_BASE_URL}/recipes/${recipeId}?preferMetric=${
+            user?.preferMetric ?? false
+          }`,
+          { cache: "no-store" }
+        );
+        if (!res.ok) throw new Error("Failed to fetch recipe");
+        const json = await res.json();
+        setRecipe(json.data);
+      } catch (err) {
+        console.error(err);
+        router.push("/not-found"); // or show error UI
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchRecipe();
+  }, [recipeId, user, router]);
+
+  if (!user || loading) return <p>Loading...</p>;
+  if (!recipe) return <p>Recipe not found.</p>;
 
   const recipeWithCount: Recipe = {
     ...recipe,

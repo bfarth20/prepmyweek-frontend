@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/Button";
 import { useRouter, useSearchParams } from "next/navigation";
 import API_BASE_URL from "@/lib/config";
 import { Ingredient, RecipeSummary } from "@/lib/types";
+import { useAuth } from "./context/AuthContext";
 
 export default function GroceryList() {
   const { selectedRecipes, clearPrep } = usePrep();
   const searchParams = useSearchParams();
   const source = searchParams.get("source");
+  const { user } = useAuth();
 
   const router = useRouter();
 
@@ -107,7 +109,10 @@ export default function GroceryList() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ recipeIds }),
+          body: JSON.stringify({
+            recipeIds,
+            preferMetric: user?.preferMetric ?? false,
+          }),
         });
 
         if (!groceryRes.ok) {
@@ -131,7 +136,7 @@ export default function GroceryList() {
     };
 
     fetchRecipeIds();
-  }, [selectedRecipes, source, pastId]);
+  }, [selectedRecipes, source, pastId, user?.preferMetric]);
 
   if (loading) {
     return <p className="text-center mt-10">Loading...</p>;
