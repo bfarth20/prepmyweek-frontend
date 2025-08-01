@@ -99,7 +99,7 @@ export default function HomePage() {
         Welcome, {user?.name || "Friend"}!
       </h1>
 
-      <div className="mb-4 flex justify-between">
+      <div className="mb-4 flex justify-between gap-8">
         <ToggleSwitch
           label="Use Metric Units"
           checked={preferMetric}

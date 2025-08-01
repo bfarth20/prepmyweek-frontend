@@ -5,7 +5,7 @@ type PageProps = {
 };
 
 export default async function Page({ params }: PageProps) {
-  const { id } = await params;
+  const { id } = await params; // Await params here
 
   return <RecipeDetailClientPage recipeId={id} />;
 }

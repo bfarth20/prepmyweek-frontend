@@ -7,7 +7,7 @@ import type { RecipeDetail, Store } from "@/lib/types";
 import API_BASE_URL from "@/lib/config";
 import { useAuth } from "@/components/context/AuthContext";
 import { Toast } from "@/components/ui/Toast";
-import { ALLOWED_UNITS } from "@/lib/constants";
+import { ALLOWED_UNITS_EDIT } from "@/lib/constants";
 import IngredientInput from "@/components/IngredientInput";
 import type { ZodIssue } from "zod";
 
@@ -446,7 +446,7 @@ export default function RecipeEditForm({ recipe, storeList }: Props) {
                 required
               >
                 <option value="">Select a unit</option>
-                {ALLOWED_UNITS.map((unit) => (
+                {ALLOWED_UNITS_EDIT.map((unit) => (
                   <option key={unit} value={unit}>
                     {unit.charAt(0).toUpperCase() + unit.slice(1)}
                   </option>

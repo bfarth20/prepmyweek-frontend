@@ -7,7 +7,7 @@ import { Button } from "./ui/Button";
 import API_BASE_URL from "@/lib/config";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/context/AuthContext";
-import { ALLOWED_UNITS } from "../lib/constants";
+import { ALLOWED_UNITS, ALLOWED_UNITS_METRIC } from "../lib/constants";
 import IngredientInput from "./IngredientInput";
 
 interface IngredientInput {
@@ -45,6 +45,8 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
   const [selectedStoreIds, setSelectedStoreIds] = useState<number[]>([]);
   const router = useRouter();
   const { user } = useAuth();
+  const preferMetric = user?.preferMetric ?? false;
+  const allowedUnits = preferMetric ? ALLOWED_UNITS_METRIC : ALLOWED_UNITS;
   const [isVegetarian, setIsVegetarian] = useState(false);
   const [ingredients, setIngredients] = useState<IngredientInput[]>([
     {
@@ -447,7 +449,7 @@ export default function AddRecipeForm({ onShowToast }: AddRecipeFormProps) {
                   required
                 >
                   <option value="">Select a unit</option>
-                  {ALLOWED_UNITS.map((unit) => (
+                  {allowedUnits.map((unit) => (
                     <option key={unit} value={unit}>
                       {unit.charAt(0).toUpperCase() + unit.slice(1)}
                     </option>

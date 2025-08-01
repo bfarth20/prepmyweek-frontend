@@ -17,3 +17,42 @@ export const ALLOWED_UNITS = [
   "fillet",
   "pinch",
 ];
+
+export const ALLOWED_UNITS_METRIC = [
+  "ml",
+  "g",
+  "kg",
+  "l",
+  "whole",
+  "clove",
+  "stalk",
+  "package",
+  "slice",
+  "bunch",
+  "fillet",
+  "pinch",
+];
+
+export const ALLOWED_UNITS_EDIT = [
+  "tsp",
+  "tbsp",
+  "cup",
+  "fl oz",
+  "oz",
+  "lb",
+  "pint",
+  "quart",
+  "gallon",
+  "ml",
+  "g",
+  "kg",
+  "l",
+  "whole",
+  "clove",
+  "stalk",
+  "package",
+  "slice",
+  "bunch",
+  "fillet",
+  "pinch",
+];

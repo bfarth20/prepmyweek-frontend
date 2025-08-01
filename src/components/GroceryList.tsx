@@ -121,6 +121,7 @@ export default function GroceryList() {
         }
 
         const { groceryList } = await groceryRes.json();
+        console.log("groceryList from backend:", groceryList);
         setGroupedIngredients(new Map(Object.entries(groceryList)));
       } catch (err) {
         if (err instanceof Error) {
