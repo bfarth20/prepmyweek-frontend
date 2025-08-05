@@ -220,6 +220,14 @@ export default function GroceryList() {
     setActiveId(null);
   };
 
+  useEffect(() => {
+    const allKeys = Array.from(groupedIngredients.keys());
+    const missing = allKeys.filter((key) => !sectionOrder.includes(key));
+    if (missing.length > 0) {
+      setSectionOrder((prev) => [...prev, ...missing]);
+    }
+  }, [groupedIngredients, sectionOrder]);
+
   if (loading) {
     return <p className="text-center mt-10">Loading...</p>;
   }
@@ -271,7 +279,12 @@ export default function GroceryList() {
           items={sectionOrder}
           strategy={verticalListSortingStrategy}
         >
-          {sectionOrder.map((storeSection) => {
+          {[
+            ...sectionOrder,
+            ...Array.from(groupedIngredients.keys()).filter(
+              (key) => !sectionOrder.includes(key)
+            ),
+          ].map((storeSection) => {
             const items = groupedIngredients.get(storeSection);
             if (!items) return null;
 
