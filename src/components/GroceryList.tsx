@@ -8,6 +8,30 @@ import API_BASE_URL from "@/lib/config";
 import { Ingredient, RecipeSummary } from "@/lib/types";
 import { useAuth } from "./context/AuthContext";
 
+import {
+  DndContext,
+  DragStartEvent,
+  DragEndEvent,
+  DragOverlay,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+type SortableSectionProps = {
+  id: string;
+  title: string;
+  children: React.ReactNode;
+};
+
 export default function GroceryList() {
   const { selectedRecipes, clearPrep } = usePrep();
   const searchParams = useSearchParams();
@@ -21,6 +45,7 @@ export default function GroceryList() {
   const [groupedIngredients, setGroupedIngredients] = useState<
     Map<string, Ingredient[]>
   >(new Map());
+  const [sectionOrder, setSectionOrder] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -29,6 +54,8 @@ export default function GroceryList() {
   const [newItem, setNewItem] = useState("");
   const params = new URLSearchParams(window.location.search);
   const pastId = params.get("id");
+
+  const sensors = useSensors(useSensor(PointerSensor));
 
   // Load custom items from localStorage if source === "current"
   useEffect(() => {
@@ -121,16 +148,34 @@ export default function GroceryList() {
         }
 
         const { groceryList } = await groceryRes.json();
-        console.log("groceryList from backend:", groceryList);
+
         setGroupedIngredients(new Map(Object.entries(groceryList)));
+
+        try {
+          const orderRes = await fetch(`${API_BASE_URL}/users/section-order`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (orderRes.ok) {
+            const data = await orderRes.json();
+            if (data.order && data.order.length > 0) {
+              setSectionOrder(data.order);
+            } else {
+              setSectionOrder(Object.keys(groceryList));
+            }
+          } else {
+            setSectionOrder(Object.keys(groceryList));
+          }
+        } catch {
+          setSectionOrder(Object.keys(groceryList));
+        }
+
+        setError("");
       } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
+        if (err instanceof Error) setError(err.message);
+        else
           setError(
             "An unexpected error occurred while loading the grocery list."
           );
-        }
       } finally {
         setLoading(false);
       }
@@ -138,6 +183,42 @@ export default function GroceryList() {
 
     fetchRecipeIds();
   }, [selectedRecipes, source, pastId, user?.preferMetric]);
+
+  const saveSectionOrderToBackend = async (order: string[]) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    try {
+      await fetch(`${API_BASE_URL}/users/section-order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ order }),
+      });
+    } catch (err) {
+      console.warn("⚠️ Failed to save section order:", err);
+    }
+  };
+
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = sectionOrder.indexOf(active.id as string);
+      const newIndex = sectionOrder.indexOf(over.id as string);
+      const newOrder = arrayMove(sectionOrder, oldIndex, newIndex);
+      setSectionOrder(newOrder);
+      saveSectionOrderToBackend(newOrder);
+    }
+    setActiveId(null);
+  };
 
   if (loading) {
     return <p className="text-center mt-10">Loading...</p>;
@@ -179,37 +260,61 @@ export default function GroceryList() {
         </div>
       </div>
 
-      {Array.from(groupedIngredients.entries()).map(([storeSection, items]) => (
-        <div key={storeSection} className="mb-4">
-          <h2 className="font-semibold text-brand text-lg mb-2">
-            {storeSection}
-          </h2>
-          <div className="ml-5 space-y-1">
-            {items.map((ingredient: Ingredient) => {
-              console.log("ingredient:", ingredient);
-              const id = `chk-${ingredient.name}-${ingredient.unit}`
-                .replace(/\s+/g, "-")
-                .toLowerCase();
-              return (
-                <div key={id} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={id}
-                    name="ingredients"
-                    value={`${ingredient.quantity} ${ingredient.unit} ${ingredient.name}`}
-                    className="mr-2"
-                  />
-                  <label htmlFor={id}>
-                    {`${ingredient.quantity} ${ingredient.unit ?? ""} ${
-                      ingredient.name
-                    }`}
-                  </label>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ))}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragCancel={() => setActiveId(null)}
+      >
+        <SortableContext
+          items={sectionOrder}
+          strategy={verticalListSortingStrategy}
+        >
+          {sectionOrder.map((storeSection) => {
+            const items = groupedIngredients.get(storeSection);
+            if (!items) return null;
+
+            return (
+              <SortableSection
+                key={storeSection}
+                id={storeSection}
+                title={storeSection}
+              >
+                {items.map((ingredient: Ingredient) => {
+                  const id = `chk-${ingredient.name}-${ingredient.unit}`
+                    .replace(/\s+/g, "-")
+                    .toLowerCase();
+                  return (
+                    <div key={id} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id={id}
+                        name="ingredients"
+                        value={`${ingredient.quantity} ${ingredient.unit} ${ingredient.name}`}
+                        className="mr-2"
+                      />
+                      <label htmlFor={id}>
+                        {`${ingredient.quantity} ${ingredient.unit ?? ""} ${
+                          ingredient.name
+                        }`}
+                      </label>
+                    </div>
+                  );
+                })}
+              </SortableSection>
+            );
+          })}
+        </SortableContext>
+
+        <DragOverlay>
+          {activeId ? (
+            <div className="p-3 bg-white rounded-md shadow-lg w-52 cursor-grabbing select-none font-semibold text-xl text-brand">
+              {activeId}
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
 
       {source === "current" && (
         <div className="mt-6 border-t pt-4">
@@ -259,6 +364,39 @@ export default function GroceryList() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function SortableSection({ id, title, children }: SortableSectionProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    backgroundColor: isDragging ? "#f0f0f0" : undefined,
+    border: isDragging ? "1px solid #ccc" : undefined,
+    borderRadius: "6px",
+    marginBottom: "1rem",
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes}>
+      {/* Drag handle: only this part listens for drag */}
+      <h2
+        {...listeners}
+        className="cursor-grab p-3 bg-white rounded-t-md select-none text-brand font-semibold text-xl"
+      >
+        {title}
+      </h2>
+      <div style={{ padding: "12px" }}>{children}</div>
     </div>
   );
 }
