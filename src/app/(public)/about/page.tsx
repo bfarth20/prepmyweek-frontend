@@ -57,7 +57,7 @@ export default function AboutPage() {
               Want to know more?
             </p>
             <Link
-              href="https://benjaminfarthing.wixsite.com/benjaminfarthingwebs"
+              href="https://benjaminfarthing.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline font-medium"
